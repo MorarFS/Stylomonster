@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Stylomonster Icon">
+  <circle cx="32" cy="32" r="30" fill="#fdfbf7" stroke="#1e3a8a" stroke-width="3.5" />
+  <!-- Left & Right Crimson Horns -->
+  <path d="M18 22 C11 14, 13 7, 21 9 C18 13, 19 17, 23 20 Z" fill="#991b1b" stroke="#1e3a8a" stroke-width="2" stroke-linejoin="round" />
+  <path d="M46 22 C53 14, 51 7, 43 9 C46 13, 45 17, 41 20 Z" fill="#991b1b" stroke="#1e3a8a" stroke-width="2" stroke-linejoin="round" />
+  <!-- Ears -->
+  <path d="M14 27 L7 24 L13 33 Z" fill="#1e3a8a" />
+  <path d="M50 27 L57 24 L51 33 Z" fill="#1e3a8a" />
+  <!-- Monster Head -->
+  <path d="M14 32 C14 20, 22 16, 32 16 C42 16, 50 20, 50 32 C50 45, 42 52, 32 52 C22 52, 14 45, 14 32 Z" fill="#1e3a8a" />
+  <!-- Inner Face Parchment -->
+  <path d="M18 33 C18 23, 24 20, 32 20 C40 20, 46 23, 46 33 C46 43, 40 48, 32 48 C24 48, 18 43, 18 33 Z" fill="#fdfbf7" />
+  <!-- Scholarly Spectacles -->
+  <circle cx="25.5" cy="30.5" r="5.5" fill="#fdfbf7" stroke="#991b1b" stroke-width="2.4" />
+  <circle cx="38.5" cy="30.5" r="5.5" fill="#fdfbf7" stroke="#991b1b" stroke-width="2.4" />
+  <line x1="31" y1="30.5" x2="33" y2="30.5" stroke="#991b1b" stroke-width="2.4" />
+  <line x1="18" y1="29.5" x2="20" y2="30" stroke="#991b1b" stroke-width="2" />
+  <line x1="44" y1="30" x2="46" y2="29.5" stroke="#991b1b" stroke-width="2" />
+  <!-- Pupils -->
+  <circle cx="26" cy="30.5" r="2.2" fill="#1e3a8a" />
+  <circle cx="38" cy="30.5" r="2.2" fill="#1e3a8a" />
+  <circle cx="26.8" cy="29.7" r="0.8" fill="#fdfbf7" />
+  <circle cx="38.8" cy="29.7" r="0.8" fill="#fdfbf7" />
+  <!-- Friendly Monster Grin & Fangs -->
+  <path d="M22 40 Q32 45 42 40" fill="none" stroke="#1e3a8a" stroke-width="2.5" stroke-linecap="round" />
+  <polygon points="24,40.5 26,44.5 28,41.2" fill="#fdfbf7" stroke="#1e3a8a" stroke-width="1.5" stroke-linejoin="round" />
+  <polygon points="36,41.2 38,44.5 40,40.5" fill="#fdfbf7" stroke="#1e3a8a" stroke-width="1.5" stroke-linejoin="round" />
+  <!-- Stylometric Quill Nib Accent at Bottom-Right -->
+  <path d="M45 45 L55 35 C56 41, 52 46, 47 47 Z" fill="#991b1b" stroke="#fdfbf7" stroke-width="1.2" />
+</svg>

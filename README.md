@@ -1,4 +1,4 @@
-# Stylomonster (`stylometry`) — Computational Stylometry & Authorship Attribution
+# <img src="docs/stylomonster-icon.jpg" width="44" height="44" align="absmiddle" alt="Stylomonster Icon" /> Stylomonster (`stylometry`) — Computational Stylometry & Authorship Attribution
 
 - **GitHub Repository**: [https://github.com/MorarFS/Stylomonster](https://github.com/MorarFS/Stylomonster)
 - **Live Interactive Website & Lab (GitHub Pages)**: [https://morarfs.github.io/Stylomonster/](https://morarfs.github.io/Stylomonster/)
