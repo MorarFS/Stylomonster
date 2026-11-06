@@ -1,0 +1,4812 @@
+{
+  "generated_at_seconds": 42.74,
+  "resources_catalog": {
+    "methods": [
+      {
+        "id": "mendenhall_curves",
+        "name": "Mendenhall's Characteristic Curves of Composition",
+        "category": "Lexical / Word-Length Distribution",
+        "year": 1887,
+        "authors": "T. C. Mendenhall",
+        "formula_summary": "P(L = k) = count(|w| = k) / N for k in 1..max_len",
+        "description": "Pioneering stylometric fingerprint measuring the relative frequency distribution of word lengths (1-letter, 2-letter, ..., k-letter words). Applied by Mendenhall (1887, 1901) to Shakespeare, Marlowe, and Bacon.",
+        "implemented_in_module": "stylometry.lexical.MendenhallCurveAnalyzer"
+      },
+      {
+        "id": "lexical_diversity_suite",
+        "name": "Lexical Richness & Vocabulary Diversity Indices",
+        "category": "Lexical Richness / Type-Token Statistics",
+        "year": 1944,
+        "authors": "G. U. Yule (1944), E. H. Simpson (1949), P. Guiraud (1954), A. Honor\u00e9 (1979), M. A. Covington & J. D. McFall (2010)",
+        "formula_summary": "TTR = V/N; Guiraud R = V/sqrt(N); Yule's K = 10^4 * (sum(i^2 * V_i) - N) / N^2; MATTR(W)",
+        "description": "Quantifies an author's vocabulary richness and repetition rate independent of text length using Yule's K Characteristic, Simpson's D, Honor\u00e9's R (hapax legomena scaling), Sichel's S (dislegomena ratio), Brun\u00e9t's W, and Moving-Average Type-Token Ratio (MATTR).",
+        "implemented_in_module": "stylometry.lexical.compute_lexical_metrics"
+      },
+      {
+        "id": "mosteller_wallace_discriminant",
+        "name": "Mosteller & Wallace Function-Word Discriminant Analysis",
+        "category": "Function-Word Probabilistic / Discriminant Attribution",
+        "year": 1964,
+        "authors": "Frederick Mosteller & David L. Wallace",
+        "formula_summary": "Log-odds / Bayesian & Linear Discriminant weighting on topic-independent marker words ('upon', 'whilst', 'enough', etc.)",
+        "description": "Landmark statistical study resolving the 12 disputed Federalist Papers by modeling rates of non-contextual function words (prepositions, conjunctions, adverbs) whose usage is invariant to political topic.",
+        "implemented_in_module": "stylometry.classifiers.MostellerWallaceClassifier"
+      },
+      {
+        "id": "kilgarriff_chi_squared",
+        "name": "Kilgarriff's Chi-Squared (\u03c7\u00b2) Distance",
+        "category": "Statistical Frequency Distance",
+        "year": 2001,
+        "authors": "Adam Kilgarriff",
+        "formula_summary": "chi^2(A, B) = sum_{w in MFW} (O_{w,A} - E_{w,A})^2 / E_{w,A} + (O_{w,B} - E_{w,B})^2 / E_{w,B}",
+        "description": "Measures corpus similarity and authorship by computing the Pearson chi-squared statistic over raw token counts of the top-N most frequent words between a candidate author's subcorpus and an unknown text.",
+        "implemented_in_module": "stylometry.chi_square.KilgarriffChiSquare"
+      },
+      {
+        "id": "burrows_delta",
+        "name": "Burrows's Classic Delta (Manhattan Z-Score Distance)",
+        "category": "Delta Family (MFW Z-Score Distances)",
+        "year": 2002,
+        "authors": "John F. Burrows",
+        "formula_summary": "Delta_B(D_1, D_2) = (1/M) * sum_{i=1}^M |z_i(D_1) - z_i(D_2)|",
+        "description": "The foundational modern stylometric metric: standardizes relative frequencies of the M Most Frequent Words (MFWs) into corpus z-scores so all features have equal variance, then computes mean absolute (L1 / Manhattan) distance.",
+        "implemented_in_module": "stylometry.delta.DeltaAnalyzer (metric='burrows')"
+      },
+      {
+        "id": "argamon_quadratic_delta",
+        "name": "Argamon's Quadratic Delta (Euclidean Z-Score Distance)",
+        "category": "Delta Family (MFW Z-Score Distances)",
+        "year": 2008,
+        "authors": "Shlomo Argamon",
+        "formula_summary": "Delta_Q(D_1, D_2) = sqrt( (1/M) * sum_{i=1}^M (z_i(D_1) - z_i(D_2))^2 )",
+        "description": "Probabilistic derivation of Burrows's Delta under Gaussian independence assumptions, replacing the L1 norm on z-scores with the L2 (Euclidean) distance.",
+        "implemented_in_module": "stylometry.delta.DeltaAnalyzer (metric='quadratic')"
+      },
+      {
+        "id": "cosine_wurzburg_delta",
+        "name": "Cosine Delta (W\u00fcrzburg Delta)",
+        "category": "Delta Family (MFW Z-Score Distances)",
+        "year": 2017,
+        "authors": "Peter W. H. Smith & W. Aldridge (2011); Stefan Evert, Thomas Proisl, Fotis Jannidis et al. (2017)",
+        "formula_summary": "Delta_cos(D_1, D_2) = 1 - (z(D_1) . z(D_2)) / (||z(D_1)||_2 * ||z(D_2)||_2)",
+        "description": "Normalizes z-score vectors to the unit hypersphere before computing angular (cosine) distance. Demonstrated by Evert et al. (2017) to outperform classic Burrows's Delta across languages, text lengths, and large MFW sizes.",
+        "implemented_in_module": "stylometry.delta.DeltaAnalyzer (metric='cosine')"
+      },
+      {
+        "id": "eder_delta",
+        "name": "Eder's Delta (Rank-Weighted Manhattan Z-Score Distance)",
+        "category": "Delta Family (MFW Z-Score Distances)",
+        "year": 2016,
+        "authors": "Maciej Eder, Jan Rybicki & Mike Kestemont",
+        "formula_summary": "Delta_E(D_1, D_2) = sum_{i=1}^M ((M - i + 1) / M) * |z_i(D_1) - z_i(D_2)|",
+        "description": "Weights each feature in the MFW list by its inverse frequency rank so that higher-frequency grammatical words exert stronger influence than lower-ranked words.",
+        "implemented_in_module": "stylometry.delta.DeltaAnalyzer (metric='eder')"
+      },
+      {
+        "id": "char_ngram_profiles",
+        "name": "Character N-Gram Profile Attribution (CNG)",
+        "category": "Sub-word / Morphological Stylometry",
+        "year": 2003,
+        "authors": "Vlado Ke\u0161elj et al. (2003); Efstathios Stamatatos (2009)",
+        "formula_summary": "Cosine / Delta distance over top-K character 3-grams and 4-grams",
+        "description": "Captures sub-word prefixes, suffixes, inflectional morphemes, word boundaries, and punctuation-whitespace habits without requiring language-specific lemmatizers.",
+        "implemented_in_module": "stylometry.syntactic.CharNGramAnalyzer"
+      },
+      {
+        "id": "syntactic_punctuation_fingerprint",
+        "name": "Syntactic Complexity, Sentence Rhythm & Punctuation Fingerprinting",
+        "category": "Syntactic & Structural Stylometry",
+        "year": 1998,
+        "authors": "E. Stamatatos et al. (2000); H. Baayen et al. (1996)",
+        "formula_summary": "Sentence length distribution moments + punctuation rates per 1,000 tokens (; : , \u2014 ? ! ( )) + readability indices",
+        "description": "Measures clause hierarchy and authorial cadence via sentence-length distributions, semicolon/colon/dash habits, and readability complexity metrics.",
+        "implemented_in_module": "stylometry.syntactic.compute_syntactic_metrics"
+      },
+      {
+        "id": "koppel_general_imposters",
+        "name": "Koppel & Winter's General Imposters (GI) Authorship Verification",
+        "category": "Open-Set Authorship Verification",
+        "year": 2014,
+        "authors": "Moshe Koppel & Yaron Winter (2014); Mike Kestemont et al. (2016)",
+        "formula_summary": "S(X, C) = (1/K) * sum_{k=1}^K I[ min_{c in C} d_{F_k}(X, c) < min_{imp in I_k} d_{F_k}(X, imp) ]",
+        "description": "Gold-standard open-set authorship verification algorithm: across K Monte Carlo iterations, randomly samples 50% of features and a subset of distractor ('imposter') documents, measuring the proportion of iterations where the disputed text is closer to the candidate author than to all sampled imposters.",
+        "implemented_in_module": "stylometry.imposters.GeneralImpostersVerifier"
+      },
+      {
+        "id": "multivariate_ml_attribution",
+        "name": "Multivariate & Supervised Machine Learning Attribution (SVM, Logistic Regression, PCA, Ward Clustering)",
+        "category": "Multivariate & Supervised Machine Learning",
+        "year": 2009,
+        "authors": "J. F. Burrows (1987 PCA); G. Fung (2003 SVM); E. Stamatatos (2009)",
+        "formula_summary": "Linear SVM / L2 Logistic Regression / PCA + Ward Hierarchical Clustering on composite stylometric feature matrices",
+        "description": "Combines function-word frequencies, lexical diversity, sentence rhythm, punctuation density, and character n-grams into calibrated supervised classifiers and unsupervised PCA/dendrogram projections.",
+        "implemented_in_module": "stylometry.classifiers.StylometricClassifierEnsemble"
+      }
+    ],
+    "external_software": [
+      {
+        "name": "stylo (R Package)",
+        "language": "R",
+        "authors_or_org": "Computational Stylistics Group (Maciej Eder, Jan Rybicki, Mike Kestemont)",
+        "url": "https://github.com/computationalstylistics/stylo",
+        "key_capabilities": "De facto standard in Digital Humanities for Delta (Burrows, Cosine, Eder), PCA, Bootstrap Consensus Trees, Rolling Stylometry, and General Imposters (`imposters()`)."
+      },
+      {
+        "name": "faststylometry",
+        "language": "Python",
+        "authors_or_org": "Fast Data Science (Thomas Wood)",
+        "url": "https://github.com/fastdatascience/faststylometry",
+        "key_capabilities": "Burrows's Delta implementation with logistic-calibrated probability estimation for same-author vs. different-author pairs."
+      },
+      {
+        "name": "StyloMetrix",
+        "language": "Python",
+        "authors_or_org": "ZILiAT-NASK",
+        "url": "https://github.com/ZILiAT-NASK/StyloMetrix",
+        "key_capabilities": "Interpretable grammatical, syntactic, and lexical feature vectors built on spaCy."
+      },
+      {
+        "name": "pystyl",
+        "language": "Python",
+        "authors_or_org": "Mike Kestemont et al.",
+        "url": "https://github.com/mikekestemont/pystyl",
+        "key_capabilities": "Python stylometry preprocessing, MFW vectorization, distance matrices, and clustering."
+      },
+      {
+        "name": "Programming Historian Stylometry Suite",
+        "language": "Python / NLTK",
+        "authors_or_org": "Fran\u00e7ois Dominic Laram\u00e9e",
+        "url": "https://programminghistorian.org/en/lessons/introduction-to-stylometry-with-python",
+        "key_capabilities": "Canonical Python implementations of Mendenhall's Characteristic Curves, Kilgarriff's Chi-Squared, and Burrows's Delta on The Federalist Papers."
+      },
+      {
+        "name": "PAN Clef Shared Tasks on Digital Text Forensics and Stylometry",
+        "language": "Multi-language / Benchmarks",
+        "authors_or_org": "PAN Workshop Series (Webis Group)",
+        "url": "https://pan.webis.de/",
+        "key_capabilities": "Annual benchmark datasets and evaluation harnesses for authorship attribution, authorship verification, style change detection, and AI text detection."
+      }
+    ],
+    "benchmark_corpora": [
+      {
+        "id": "federalist_papers",
+        "name": "The Federalist Papers (1787\u20131788)",
+        "authors_included": [
+          "Alexander Hamilton",
+          "James Madison",
+          "John Jay"
+        ],
+        "document_count": 85,
+        "historical_problem": "85 essays published under the shared pseudonym 'Publius'. 51 undisputed by Hamilton, 14 undisputed by Madison, 5 by Jay (#2-5, #64), 3 joint (#18-20), and 12 famous disputed essays (#49-58, #62-63) claimed by both Hamilton and Madison.",
+        "source_url": "https://www.gutenberg.org/ebooks/1404"
+      },
+      {
+        "id": "classic_british_novelists",
+        "name": "19th-Century Classic Literature Benchmark Corpus",
+        "authors_included": [
+          "Jane Austen",
+          "Charlotte Bront\u00eb",
+          "Charles Dickens",
+          "Sir Arthur Conan Doyle",
+          "H. G. Wells"
+        ],
+        "document_count": 15,
+        "historical_problem": "Multi-author literary attribution across 15 full novels (~1.9M words), including cross-genre test cases such as attributing Sir Arthur Conan Doyle's science-fiction adventure 'The Lost World' against H. G. Wells's science-fiction romances and distinguishing Victorian contemporaries.",
+        "source_url": "https://www.gutenberg.org/"
+      }
+    ],
+    "word_lists": {
+      "mosteller_wallace_markers_count": 30,
+      "mosteller_wallace_markers": [
+        "upon",
+        "whilst",
+        "while",
+        "enough",
+        "there",
+        "on",
+        "to",
+        "by",
+        "of",
+        "from",
+        "in",
+        "also",
+        "an",
+        "both",
+        "though",
+        "although",
+        "commonly",
+        "consequently",
+        "considerable",
+        "according",
+        "apt",
+        "direction",
+        "innovation",
+        "language",
+        "vigor",
+        "kind",
+        "matter",
+        "particularly",
+        "probability",
+        "work"
+      ],
+      "mosteller_wallace_contrastive_pairs": {
+        "upon_vs_on": {
+          "hamilton_marker": "upon",
+          "madison_marker": "on",
+          "note": "Hamilton uses 'upon' ~3.2 per 1,000 words vs. Madison's ~0.16 per 1,000 words."
+        },
+        "while_vs_whilst": {
+          "hamilton_marker": "while",
+          "madison_marker": "whilst",
+          "note": "Hamilton almost exclusively uses 'while'; Madison almost exclusively uses 'whilst'."
+        },
+        "enough": {
+          "hamilton_marker": "enough",
+          "madison_marker": "",
+          "note": "Hamilton uses 'enough' regularly; Madison virtually never uses it in the Federalist."
+        },
+        "consequently": {
+          "hamilton_marker": "",
+          "madison_marker": "consequently",
+          "note": "Madison uses 'consequently' at a much higher rate than Hamilton."
+        }
+      },
+      "standard_function_words_count": 221,
+      "personal_pronouns_count": 28
+    }
+  },
+  "federalist_benchmark": {
+    "corpus_summary": {
+      "total_papers": 85,
+      "undisputed_hamilton": 51,
+      "undisputed_madison": 14,
+      "undisputed_jay": 5,
+      "disputed_papers": 12,
+      "joint_papers": 3,
+      "total_words": 189774
+    },
+    "author_profiles": {
+      "Hamilton": {
+        "document_count": 51,
+        "total_words": 112887,
+        "lexical_means": {
+          "token_count": 2213.4706,
+          "type_count": 705.5882,
+          "mean_word_length": 4.7958,
+          "std_word_length": 2.8487,
+          "ttr": 0.331,
+          "root_ttr_guiraud": 15.0692,
+          "log_ttr_herdan": 0.8545,
+          "mattr": 0.4751,
+          "hapax_ratio": 0.6769,
+          "dislegomena_ratio": 0.1391,
+          "yules_k": 186.3303,
+          "simpsons_d": 0.0186,
+          "honores_r": 2388.0731,
+          "brunets_w": 13.478
+        },
+        "syntactic_means": {
+          "sentence_count": 65.0,
+          "mean_sentence_length": 34.8986,
+          "std_sentence_length": 20.8615,
+          "median_sentence_length": 30.8627,
+          "iqr_sentence_length": 23.3186,
+          "short_sentence_ratio": 0.0922,
+          "long_sentence_ratio": 0.4203,
+          "comma_rate_per_1k": 67.5716,
+          "semicolon_rate_per_1k": 7.1037,
+          "colon_rate_per_1k": 0.7218,
+          "dash_rate_per_1k": 0.4489,
+          "question_rate_per_1k": 2.31,
+          "exclamation_rate_per_1k": 0.0958,
+          "paren_rate_per_1k": 1.7324,
+          "quote_rate_per_1k": 2.0876,
+          "mean_syllables_per_word": 1.5965,
+          "complex_word_ratio": 0.1718,
+          "flesch_reading_ease": 36.3492,
+          "flesch_kincaid_grade": 16.8591,
+          "coleman_liau_index": 11.5378,
+          "automated_readability_index": 18.6077,
+          "gunning_fog_index": 20.8331
+        },
+        "marker_rates_per_1k": {
+          "upon": 3.2676,
+          "on": 3.3696,
+          "while": 0.2787,
+          "whilst": 0.005,
+          "enough": 0.2964,
+          "there": 3.2583,
+          "consequently": 0.0186,
+          "commonly": 0.2076,
+          "by": 7.194,
+          "to": 40.7346,
+          "from": 5.5294,
+          "in": 24.4572,
+          "also": 0.3291,
+          "an": 5.739,
+          "both": 0.5008,
+          "though": 0.8696,
+          "considerable": 0.3977,
+          "according": 0.1431,
+          "vigor": 0.1327,
+          "innovation": 0.0112,
+          "direction": 0.237,
+          "apt": 0.3138
+        },
+        "mendenhall_curve_1_to_15": [
+          0.0248,
+          0.2258,
+          0.1892,
+          0.131,
+          0.1013,
+          0.075,
+          0.0658,
+          0.0539,
+          0.0481,
+          0.037,
+          0.0232,
+          0.0134,
+          0.0065,
+          0.0036,
+          0.0013
+        ]
+      },
+      "Jay": {
+        "document_count": 5,
+        "total_words": 8381,
+        "lexical_means": {
+          "token_count": 1676.2,
+          "type_count": 581.0,
+          "mean_word_length": 4.8678,
+          "std_word_length": 2.7086,
+          "ttr": 0.3514,
+          "root_ttr_guiraud": 14.2255,
+          "log_ttr_herdan": 0.8585,
+          "mattr": 0.4842,
+          "hapax_ratio": 0.6626,
+          "dislegomena_ratio": 0.1443,
+          "yules_k": 127.6548,
+          "simpsons_d": 0.0128,
+          "honores_r": 2201.3684,
+          "brunets_w": 13.3842
+        },
+        "syntactic_means": {
+          "sentence_count": 42.8,
+          "mean_sentence_length": 38.9573,
+          "std_sentence_length": 18.7589,
+          "median_sentence_length": 36.5,
+          "iqr_sentence_length": 24.05,
+          "short_sentence_ratio": 0.0598,
+          "long_sentence_ratio": 0.5301,
+          "comma_rate_per_1k": 75.2276,
+          "semicolon_rate_per_1k": 6.1892,
+          "colon_rate_per_1k": 0.5061,
+          "dash_rate_per_1k": 1.2544,
+          "question_rate_per_1k": 2.0429,
+          "exclamation_rate_per_1k": 0.2424,
+          "paren_rate_per_1k": 1.0075,
+          "quote_rate_per_1k": 1.6105,
+          "mean_syllables_per_word": 1.5798,
+          "complex_word_ratio": 0.1568,
+          "flesch_reading_ease": 33.6433,
+          "flesch_kincaid_grade": 18.2449,
+          "coleman_liau_index": 12.0617,
+          "automated_readability_index": 20.9762,
+          "gunning_fog_index": 21.8557
+        },
+        "marker_rates_per_1k": {
+          "upon": 0.1201,
+          "on": 5.1031,
+          "while": 0.2069,
+          "whilst": 0.0,
+          "enough": 0.0,
+          "there": 1.0266,
+          "consequently": 0.5037,
+          "commonly": 0.139,
+          "by": 9.5144,
+          "to": 34.1374,
+          "from": 6.2305,
+          "in": 19.2817,
+          "also": 1.3746,
+          "an": 2.023,
+          "both": 0.8771,
+          "though": 0.0868,
+          "considerable": 0.0868,
+          "according": 0.0,
+          "vigor": 0.0,
+          "innovation": 0.0,
+          "direction": 0.0868,
+          "apt": 0.0
+        },
+        "mendenhall_curve_1_to_15": [
+          0.0128,
+          0.1987,
+          0.1932,
+          0.1611,
+          0.0971,
+          0.0785,
+          0.0772,
+          0.0605,
+          0.0463,
+          0.0356,
+          0.0202,
+          0.0084,
+          0.0075,
+          0.0021,
+          0.001
+        ]
+      },
+      "Madison": {
+        "document_count": 14,
+        "total_words": 38771,
+        "lexical_means": {
+          "token_count": 2769.3571,
+          "type_count": 798.2143,
+          "mean_word_length": 4.9025,
+          "std_word_length": 2.8868,
+          "ttr": 0.2901,
+          "root_ttr_guiraud": 15.1547,
+          "log_ttr_herdan": 0.8429,
+          "mattr": 0.4541,
+          "hapax_ratio": 0.638,
+          "dislegomena_ratio": 0.1531,
+          "yules_k": 193.4266,
+          "simpsons_d": 0.0193,
+          "honores_r": 2202.866,
+          "brunets_w": 13.9242
+        },
+        "syntactic_means": {
+          "sentence_count": 81.0714,
+          "mean_sentence_length": 34.8738,
+          "std_sentence_length": 21.1108,
+          "median_sentence_length": 30.3929,
+          "iqr_sentence_length": 24.8214,
+          "short_sentence_ratio": 0.102,
+          "long_sentence_ratio": 0.4136,
+          "comma_rate_per_1k": 73.4203,
+          "semicolon_rate_per_1k": 9.7441,
+          "colon_rate_per_1k": 0.6916,
+          "dash_rate_per_1k": 0.044,
+          "question_rate_per_1k": 2.1241,
+          "exclamation_rate_per_1k": 0.0876,
+          "paren_rate_per_1k": 0.2253,
+          "quote_rate_per_1k": 2.426,
+          "mean_syllables_per_word": 1.6254,
+          "complex_word_ratio": 0.1805,
+          "flesch_reading_ease": 33.9281,
+          "flesch_kincaid_grade": 17.1907,
+          "coleman_liau_index": 12.168,
+          "automated_readability_index": 19.0977,
+          "gunning_fog_index": 21.1712
+        },
+        "marker_rates_per_1k": {
+          "upon": 0.164,
+          "on": 7.6475,
+          "while": 0.0,
+          "whilst": 0.3151,
+          "enough": 0.0,
+          "there": 0.8489,
+          "consequently": 0.3371,
+          "commonly": 0.0,
+          "by": 11.5489,
+          "to": 31.9656,
+          "from": 5.0046,
+          "in": 21.0392,
+          "also": 0.7752,
+          "an": 4.2477,
+          "both": 1.0621,
+          "though": 0.6211,
+          "considerable": 0.1336,
+          "according": 0.5723,
+          "vigor": 0.0,
+          "innovation": 0.0757,
+          "direction": 0.0631,
+          "apt": 0.0766
+        },
+        "mendenhall_curve_1_to_15": [
+          0.0211,
+          0.2106,
+          0.2006,
+          0.127,
+          0.0964,
+          0.077,
+          0.0696,
+          0.0558,
+          0.0493,
+          0.0409,
+          0.0255,
+          0.0142,
+          0.0068,
+          0.0038,
+          0.0014
+        ]
+      }
+    },
+    "cross_validation_3class_70_papers": {
+      "burrows_delta": {
+        "accuracy": 0.8857,
+        "macro_f1": 0.8015,
+        "correct": 62,
+        "total": 70
+      },
+      "cosine_delta": {
+        "accuracy": 0.7571,
+        "macro_f1": 0.6846,
+        "correct": 53,
+        "total": 70
+      },
+      "quadratic_delta": {
+        "accuracy": 0.9286,
+        "macro_f1": 0.8884,
+        "correct": 65,
+        "total": 70
+      },
+      "eder_delta": {
+        "accuracy": 0.9286,
+        "macro_f1": 0.8884,
+        "correct": 65,
+        "total": 70
+      },
+      "kilgarriff_chi2": {
+        "accuracy": 0.7143,
+        "macro_f1": 0.6418,
+        "correct": 50,
+        "total": 70
+      },
+      "mendenhall_curve": {
+        "accuracy": 0.8,
+        "macro_f1": 0.7746,
+        "correct": 56,
+        "total": 70
+      },
+      "mosteller_wallace": {
+        "accuracy": 0.9857,
+        "macro_f1": 0.9515,
+        "correct": 69,
+        "total": 70
+      },
+      "char_ngrams": {
+        "accuracy": 0.7429,
+        "macro_f1": 0.6638,
+        "correct": 52,
+        "total": 70
+      },
+      "general_imposters": {
+        "accuracy": 0.9286,
+        "macro_f1": 0.8571,
+        "correct": 65,
+        "total": 70
+      },
+      "composite_ml": {
+        "accuracy": 0.9286,
+        "macro_f1": 0.8837,
+        "correct": 65,
+        "total": 70
+      },
+      "ensemble_consensus": {
+        "accuracy": 0.9429,
+        "macro_f1": 0.9022,
+        "correct": 66,
+        "total": 70
+      }
+    },
+    "cross_validation_2class_65_papers": {
+      "burrows_delta": {
+        "accuracy": 0.9231,
+        "macro_f1": 0.8762,
+        "correct": 60,
+        "total": 65
+      },
+      "cosine_delta": {
+        "accuracy": 0.8462,
+        "macro_f1": 0.8141,
+        "correct": 55,
+        "total": 65
+      },
+      "quadratic_delta": {
+        "accuracy": 0.9385,
+        "macro_f1": 0.9038,
+        "correct": 61,
+        "total": 65
+      },
+      "eder_delta": {
+        "accuracy": 0.9385,
+        "macro_f1": 0.9038,
+        "correct": 61,
+        "total": 65
+      },
+      "kilgarriff_chi2": {
+        "accuracy": 0.8769,
+        "macro_f1": 0.8342,
+        "correct": 57,
+        "total": 65
+      },
+      "mendenhall_curve": {
+        "accuracy": 0.8308,
+        "macro_f1": 0.7922,
+        "correct": 54,
+        "total": 65
+      },
+      "mosteller_wallace": {
+        "accuracy": 1.0,
+        "macro_f1": 1.0,
+        "correct": 65,
+        "total": 65
+      },
+      "char_ngrams": {
+        "accuracy": 0.8308,
+        "macro_f1": 0.7985,
+        "correct": 54,
+        "total": 65
+      },
+      "general_imposters": {
+        "accuracy": 0.9231,
+        "macro_f1": 0.8762,
+        "correct": 60,
+        "total": 65
+      },
+      "composite_ml": {
+        "accuracy": 0.9538,
+        "macro_f1": 0.9257,
+        "correct": 62,
+        "total": 65
+      },
+      "ensemble_consensus": {
+        "accuracy": 0.9538,
+        "macro_f1": 0.9299,
+        "correct": 62,
+        "total": 65
+      }
+    },
+    "federalist_64_jay_test": {
+      "consensus_author": "Jay",
+      "consensus_agreement": 0.7778,
+      "vote_breakdown": {
+        "Hamilton": 1,
+        "Jay": 7,
+        "Madison": 1
+      },
+      "predictions": {
+        "burrows_delta": "Hamilton",
+        "cosine_delta": "Jay",
+        "quadratic_delta": "Jay",
+        "eder_delta": "Jay",
+        "kilgarriff_chi2": "Jay",
+        "mendenhall_curve": "Madison",
+        "mosteller_wallace": "Madison",
+        "char_ngrams": "Jay",
+        "general_imposters": "Jay",
+        "composite_ml": "Jay"
+      },
+      "details": {
+        "burrows_delta_distances": {
+          "Hamilton": 0.96,
+          "Jay": 0.9614,
+          "Madison": 1.042
+        },
+        "cosine_delta_distances": {
+          "Hamilton": 1.1542,
+          "Jay": 0.6334,
+          "Madison": 1.0559
+        },
+        "quadratic_delta_distances": {
+          "Hamilton": 1.3101,
+          "Jay": 1.2657,
+          "Madison": 1.3593
+        },
+        "eder_delta_distances": {
+          "Hamilton": 1.0374,
+          "Jay": 0.987,
+          "Madison": 1.0717
+        },
+        "kilgarriff_chi2_distances": {
+          "Hamilton": 1573.75,
+          "Jay": 1017.74,
+          "Madison": 1540.4
+        },
+        "mendenhall_l1_distances": {
+          "Hamilton": 0.1249,
+          "Jay": 0.1132,
+          "Madison": 0.1079
+        },
+        "mosteller_wallace_probs": {
+          "Hamilton": 0.0265,
+          "Jay": 0.3435,
+          "Madison": 0.63
+        },
+        "char_ngram_cosine_distances": {
+          "Hamilton": 1.2445,
+          "Jay": 0.6036,
+          "Madison": 0.9774
+        },
+        "general_imposters_scores": {
+          "Hamilton": 0.4,
+          "Jay": 0.59,
+          "Madison": 0.17
+        },
+        "composite_ml_probs": {
+          "Hamilton": 0.234,
+          "Jay": 0.6002,
+          "Madison": 0.1658
+        }
+      }
+    },
+    "disputed_12_papers_attribution": [
+      {
+        "doc_id": "fed_49",
+        "paper_number": 49,
+        "title": "Federalist No. 49: Method of Guarding Against the Encroachments of Any One Department of Government by Appealing to the People Through a Convention.",
+        "word_count": 1646,
+        "consensus_author": "Madison",
+        "consensus_agreement": 1.0,
+        "vote_breakdown": {
+          "Madison": 9
+        },
+        "predictions": {
+          "burrows_delta": "Madison",
+          "cosine_delta": "Madison",
+          "quadratic_delta": "Madison",
+          "eder_delta": "Madison",
+          "kilgarriff_chi2": "Madison",
+          "mendenhall_curve": "Madison",
+          "mosteller_wallace": "Madison",
+          "char_ngrams": "Madison",
+          "general_imposters": "Madison",
+          "composite_ml": "Madison"
+        },
+        "burrows_delta": {
+          "Hamilton": 0.8122,
+          "Madison": 0.7314
+        },
+        "cosine_delta": {
+          "Hamilton": 1.3264,
+          "Madison": 0.6736
+        },
+        "quadratic_delta": {
+          "Hamilton": 1.0295,
+          "Madison": 0.934
+        },
+        "eder_delta": {
+          "Hamilton": 0.8372,
+          "Madison": 0.7366
+        },
+        "kilgarriff_chi2": {
+          "Hamilton": 1132.05,
+          "Madison": 821.77
+        },
+        "mosteller_wallace_probs": {
+          "Hamilton": 0.09,
+          "Madison": 0.91
+        },
+        "general_imposters_scores": {
+          "Hamilton": 0.2,
+          "Madison": 0.9
+        },
+        "composite_ml_probs": {
+          "Hamilton": 0.1048,
+          "Madison": 0.8952
+        },
+        "marker_rates_per_1k": {
+          "upon": 0.0,
+          "on": 9.721,
+          "while": 0.0,
+          "whilst": 0.608,
+          "enough": 0.0,
+          "consequently": 0.608
+        },
+        "top_discriminating_mfw": [
+          {
+            "word": "upon",
+            "rank": 50,
+            "test_z": -1.461,
+            "Madison_z": -1.36,
+            "Hamilton_z": 0.401,
+            "favors": "Madison",
+            "abs_advantage": 1.7609,
+            "signed_advantage_for_Madison": 1.7609
+          },
+          {
+            "word": "on",
+            "rank": 29,
+            "test_z": 2.133,
+            "Madison_z": 1.304,
+            "Hamilton_z": -0.353,
+            "favors": "Madison",
+            "abs_advantage": 1.6565,
+            "signed_advantage_for_Madison": 1.6565
+          },
+          {
+            "word": "there",
+            "rank": 45,
+            "test_z": -0.845,
+            "Madison_z": -1.047,
+            "Hamilton_z": 0.348,
+            "favors": "Madison",
+            "abs_advantage": 0.9912,
+            "signed_advantage_for_Madison": 0.9912
+          },
+          {
+            "word": "latter",
+            "rank": 128,
+            "test_z": -0.301,
+            "Madison_z": 0.737,
+            "Hamilton_z": -0.226,
+            "favors": "Hamilton",
+            "abs_advantage": 0.9635,
+            "signed_advantage_for_Madison": -0.9635
+          },
+          {
+            "word": "powers",
+            "rank": 78,
+            "test_z": -0.111,
+            "Madison_z": 0.945,
+            "Hamilton_z": -0.283,
+            "favors": "Hamilton",
+            "abs_advantage": 0.885,
+            "signed_advantage_for_Madison": -0.885
+          },
+          {
+            "word": "several",
+            "rank": 129,
+            "test_z": 2.113,
+            "Madison_z": 0.707,
+            "Hamilton_z": -0.167,
+            "favors": "Madison",
+            "abs_advantage": 0.8739,
+            "signed_advantage_for_Madison": 0.8739
+          }
+        ]
+      },
+      {
+        "doc_id": "fed_50",
+        "paper_number": 50,
+        "title": "Federalist No. 50: Periodical Appeals to the People Considered",
+        "word_count": 1101,
+        "consensus_author": "Madison",
+        "consensus_agreement": 1.0,
+        "vote_breakdown": {
+          "Madison": 9
+        },
+        "predictions": {
+          "burrows_delta": "Madison",
+          "cosine_delta": "Madison",
+          "quadratic_delta": "Madison",
+          "eder_delta": "Madison",
+          "kilgarriff_chi2": "Madison",
+          "mendenhall_curve": "Madison",
+          "mosteller_wallace": "Madison",
+          "char_ngrams": "Madison",
+          "general_imposters": "Madison",
+          "composite_ml": "Madison"
+        },
+        "burrows_delta": {
+          "Hamilton": 1.1395,
+          "Madison": 1.1017
+        },
+        "cosine_delta": {
+          "Hamilton": 1.2777,
+          "Madison": 0.7223
+        },
+        "quadratic_delta": {
+          "Hamilton": 1.4921,
+          "Madison": 1.4067
+        },
+        "eder_delta": {
+          "Hamilton": 1.1728,
+          "Madison": 1.119
+        },
+        "kilgarriff_chi2": {
+          "Hamilton": 1080.62,
+          "Madison": 918.33
+        },
+        "mosteller_wallace_probs": {
+          "Hamilton": 0.0176,
+          "Madison": 0.9824
+        },
+        "general_imposters_scores": {
+          "Hamilton": 0.13,
+          "Madison": 0.94
+        },
+        "composite_ml_probs": {
+          "Hamilton": 0.0119,
+          "Madison": 0.9881
+        },
+        "marker_rates_per_1k": {
+          "upon": 0.908,
+          "on": 9.991,
+          "while": 0.0,
+          "whilst": 0.0,
+          "enough": 0.0,
+          "consequently": 0.0
+        },
+        "top_discriminating_mfw": [
+          {
+            "word": "on",
+            "rank": 29,
+            "test_z": 2.24,
+            "Madison_z": 1.304,
+            "Hamilton_z": -0.353,
+            "favors": "Madison",
+            "abs_advantage": 1.6565,
+            "signed_advantage_for_Madison": 1.6565
+          },
+          {
+            "word": "there",
+            "rank": 45,
+            "test_z": -1.519,
+            "Madison_z": -1.047,
+            "Hamilton_z": 0.348,
+            "favors": "Madison",
+            "abs_advantage": 1.3948,
+            "signed_advantage_for_Madison": 1.3948
+          },
+          {
+            "word": "to",
+            "rank": 3,
+            "test_z": -2.169,
+            "Madison_z": -1.012,
+            "Hamilton_z": 0.217,
+            "favors": "Madison",
+            "abs_advantage": 1.2289,
+            "signed_advantage_for_Madison": 1.2289
+          },
+          {
+            "word": "powers",
+            "rank": 78,
+            "test_z": -0.726,
+            "Madison_z": 0.945,
+            "Hamilton_z": -0.283,
+            "favors": "Hamilton",
+            "abs_advantage": 1.2273,
+            "signed_advantage_for_Madison": -1.2273
+          },
+          {
+            "word": "and",
+            "rank": 4,
+            "test_z": 0.888,
+            "Madison_z": 0.898,
+            "Hamilton_z": -0.252,
+            "favors": "Madison",
+            "abs_advantage": 1.1307,
+            "signed_advantage_for_Madison": 1.1307
+          },
+          {
+            "word": "latter",
+            "rank": 128,
+            "test_z": -1.105,
+            "Madison_z": 0.737,
+            "Hamilton_z": -0.226,
+            "favors": "Hamilton",
+            "abs_advantage": 0.9635,
+            "signed_advantage_for_Madison": -0.9635
+          }
+        ]
+      },
+      {
+        "doc_id": "fed_51",
+        "paper_number": 51,
+        "title": "Federalist No. 51: The Structure of the Government Must Furnish the Proper Checks and Balances Between the Different Departments.",
+        "word_count": 1914,
+        "consensus_author": "Madison",
+        "consensus_agreement": 1.0,
+        "vote_breakdown": {
+          "Madison": 9
+        },
+        "predictions": {
+          "burrows_delta": "Madison",
+          "cosine_delta": "Madison",
+          "quadratic_delta": "Madison",
+          "eder_delta": "Madison",
+          "kilgarriff_chi2": "Madison",
+          "mendenhall_curve": "Hamilton",
+          "mosteller_wallace": "Madison",
+          "char_ngrams": "Madison",
+          "general_imposters": "Madison",
+          "composite_ml": "Madison"
+        },
+        "burrows_delta": {
+          "Hamilton": 0.9864,
+          "Madison": 0.8605
+        },
+        "cosine_delta": {
+          "Hamilton": 1.3939,
+          "Madison": 0.6061
+        },
+        "quadratic_delta": {
+          "Hamilton": 1.3379,
+          "Madison": 1.1887
+        },
+        "eder_delta": {
+          "Hamilton": 1.0054,
+          "Madison": 0.8803
+        },
+        "kilgarriff_chi2": {
+          "Hamilton": 1533.15,
+          "Madison": 1042.47
+        },
+        "mosteller_wallace_probs": {
+          "Hamilton": 0.0005,
+          "Madison": 0.9995
+        },
+        "general_imposters_scores": {
+          "Hamilton": 0.23,
+          "Madison": 0.88
+        },
+        "composite_ml_probs": {
+          "Hamilton": 0.0011,
+          "Madison": 0.9989
+        },
+        "marker_rates_per_1k": {
+          "upon": 0.0,
+          "on": 10.972,
+          "while": 0.0,
+          "whilst": 1.045,
+          "enough": 0.0,
+          "consequently": 1.045
+        },
+        "top_discriminating_mfw": [
+          {
+            "word": "upon",
+            "rank": 50,
+            "test_z": -1.461,
+            "Madison_z": -1.36,
+            "Hamilton_z": 0.401,
+            "favors": "Madison",
+            "abs_advantage": 1.7609,
+            "signed_advantage_for_Madison": 1.7609
+          },
+          {
+            "word": "on",
+            "rank": 29,
+            "test_z": 2.625,
+            "Madison_z": 1.304,
+            "Hamilton_z": -0.353,
+            "favors": "Madison",
+            "abs_advantage": 1.6565,
+            "signed_advantage_for_Madison": 1.6565
+          },
+          {
+            "word": "by",
+            "rank": 13,
+            "test_z": 1.175,
+            "Madison_z": 1.066,
+            "Hamilton_z": -0.169,
+            "favors": "Madison",
+            "abs_advantage": 1.2348,
+            "signed_advantage_for_Madison": 1.2348
+          },
+          {
+            "word": "to",
+            "rank": 3,
+            "test_z": -2.005,
+            "Madison_z": -1.012,
+            "Hamilton_z": 0.217,
+            "favors": "Madison",
+            "abs_advantage": 1.2289,
+            "signed_advantage_for_Madison": 1.2289
+          },
+          {
+            "word": "and",
+            "rank": 4,
+            "test_z": -0.873,
+            "Madison_z": 0.898,
+            "Hamilton_z": -0.252,
+            "favors": "Hamilton",
+            "abs_advantage": 1.15,
+            "signed_advantage_for_Madison": -1.15
+          },
+          {
+            "word": "latter",
+            "rank": 128,
+            "test_z": 1.659,
+            "Madison_z": 0.737,
+            "Hamilton_z": -0.226,
+            "favors": "Madison",
+            "abs_advantage": 0.9635,
+            "signed_advantage_for_Madison": 0.9635
+          }
+        ]
+      },
+      {
+        "doc_id": "fed_52",
+        "paper_number": 52,
+        "title": "Federalist No. 52: The House of Representatives",
+        "word_count": 1844,
+        "consensus_author": "Madison",
+        "consensus_agreement": 1.0,
+        "vote_breakdown": {
+          "Madison": 9
+        },
+        "predictions": {
+          "burrows_delta": "Madison",
+          "cosine_delta": "Madison",
+          "quadratic_delta": "Madison",
+          "eder_delta": "Madison",
+          "kilgarriff_chi2": "Madison",
+          "mendenhall_curve": "Hamilton",
+          "mosteller_wallace": "Madison",
+          "char_ngrams": "Madison",
+          "general_imposters": "Madison",
+          "composite_ml": "Madison"
+        },
+        "burrows_delta": {
+          "Hamilton": 0.8506,
+          "Madison": 0.7752
+        },
+        "cosine_delta": {
+          "Hamilton": 1.3631,
+          "Madison": 0.6369
+        },
+        "quadratic_delta": {
+          "Hamilton": 1.122,
+          "Madison": 1.0067
+        },
+        "eder_delta": {
+          "Hamilton": 0.8249,
+          "Madison": 0.7576
+        },
+        "kilgarriff_chi2": {
+          "Hamilton": 1353.72,
+          "Madison": 1197.68
+        },
+        "mosteller_wallace_probs": {
+          "Hamilton": 0.0496,
+          "Madison": 0.9504
+        },
+        "general_imposters_scores": {
+          "Hamilton": 0.51,
+          "Madison": 0.6
+        },
+        "composite_ml_probs": {
+          "Hamilton": 0.0313,
+          "Madison": 0.9687
+        },
+        "marker_rates_per_1k": {
+          "upon": 0.0,
+          "on": 9.761,
+          "while": 0.0,
+          "whilst": 0.0,
+          "enough": 0.0,
+          "consequently": 0.0
+        },
+        "top_discriminating_mfw": [
+          {
+            "word": "upon",
+            "rank": 50,
+            "test_z": -1.461,
+            "Madison_z": -1.36,
+            "Hamilton_z": 0.401,
+            "favors": "Madison",
+            "abs_advantage": 1.7609,
+            "signed_advantage_for_Madison": 1.7609
+          },
+          {
+            "word": "on",
+            "rank": 29,
+            "test_z": 2.149,
+            "Madison_z": 1.304,
+            "Hamilton_z": -0.353,
+            "favors": "Madison",
+            "abs_advantage": 1.6565,
+            "signed_advantage_for_Madison": 1.6565
+          },
+          {
+            "word": "there",
+            "rank": 45,
+            "test_z": -1.519,
+            "Madison_z": -1.047,
+            "Hamilton_z": 0.348,
+            "favors": "Madison",
+            "abs_advantage": 1.3948,
+            "signed_advantage_for_Madison": 1.3948
+          },
+          {
+            "word": "by",
+            "rank": 13,
+            "test_z": 1.148,
+            "Madison_z": 1.066,
+            "Hamilton_z": -0.169,
+            "favors": "Madison",
+            "abs_advantage": 1.2348,
+            "signed_advantage_for_Madison": 1.2348
+          },
+          {
+            "word": "powers",
+            "rank": 78,
+            "test_z": -0.726,
+            "Madison_z": 0.945,
+            "Hamilton_z": -0.283,
+            "favors": "Hamilton",
+            "abs_advantage": 1.2273,
+            "signed_advantage_for_Madison": -1.2273
+          },
+          {
+            "word": "and",
+            "rank": 4,
+            "test_z": -1.034,
+            "Madison_z": 0.898,
+            "Hamilton_z": -0.252,
+            "favors": "Hamilton",
+            "abs_advantage": 1.15,
+            "signed_advantage_for_Madison": -1.15
+          }
+        ]
+      },
+      {
+        "doc_id": "fed_53",
+        "paper_number": 53,
+        "title": "Federalist No. 53: The Same Subject Continued (The House of Representatives)",
+        "word_count": 2164,
+        "consensus_author": "Madison",
+        "consensus_agreement": 1.0,
+        "vote_breakdown": {
+          "Madison": 9
+        },
+        "predictions": {
+          "burrows_delta": "Madison",
+          "cosine_delta": "Madison",
+          "quadratic_delta": "Madison",
+          "eder_delta": "Madison",
+          "kilgarriff_chi2": "Madison",
+          "mendenhall_curve": "Madison",
+          "mosteller_wallace": "Madison",
+          "char_ngrams": "Madison",
+          "general_imposters": "Madison",
+          "composite_ml": "Madison"
+        },
+        "burrows_delta": {
+          "Hamilton": 0.8077,
+          "Madison": 0.7221
+        },
+        "cosine_delta": {
+          "Hamilton": 1.3277,
+          "Madison": 0.6723
+        },
+        "quadratic_delta": {
+          "Hamilton": 1.0714,
+          "Madison": 0.9852
+        },
+        "eder_delta": {
+          "Hamilton": 0.7906,
+          "Madison": 0.6629
+        },
+        "kilgarriff_chi2": {
+          "Hamilton": 1602.29,
+          "Madison": 1434.9
+        },
+        "mosteller_wallace_probs": {
+          "Hamilton": 0.0366,
+          "Madison": 0.9634
+        },
+        "general_imposters_scores": {
+          "Hamilton": 0.15,
+          "Madison": 0.9
+        },
+        "composite_ml_probs": {
+          "Hamilton": 0.0124,
+          "Madison": 0.9876
+        },
+        "marker_rates_per_1k": {
+          "upon": 0.0,
+          "on": 3.697,
+          "while": 0.0,
+          "whilst": 0.462,
+          "enough": 0.0,
+          "consequently": 0.0
+        },
+        "top_discriminating_mfw": [
+          {
+            "word": "upon",
+            "rank": 50,
+            "test_z": -1.461,
+            "Madison_z": -1.36,
+            "Hamilton_z": 0.401,
+            "favors": "Madison",
+            "abs_advantage": 1.7609,
+            "signed_advantage_for_Madison": 1.7609
+          },
+          {
+            "word": "on",
+            "rank": 29,
+            "test_z": -0.233,
+            "Madison_z": 1.304,
+            "Hamilton_z": -0.353,
+            "favors": "Hamilton",
+            "abs_advantage": 1.4176,
+            "signed_advantage_for_Madison": -1.4176
+          },
+          {
+            "word": "there",
+            "rank": 45,
+            "test_z": -1.007,
+            "Madison_z": -1.047,
+            "Hamilton_z": 0.348,
+            "favors": "Madison",
+            "abs_advantage": 1.3138,
+            "signed_advantage_for_Madison": 1.3138
+          },
+          {
+            "word": "by",
+            "rank": 13,
+            "test_z": 1.872,
+            "Madison_z": 1.066,
+            "Hamilton_z": -0.169,
+            "favors": "Madison",
+            "abs_advantage": 1.2348,
+            "signed_advantage_for_Madison": 1.2348
+          },
+          {
+            "word": "powers",
+            "rank": 78,
+            "test_z": -0.726,
+            "Madison_z": 0.945,
+            "Hamilton_z": -0.283,
+            "favors": "Hamilton",
+            "abs_advantage": 1.2273,
+            "signed_advantage_for_Madison": -1.2273
+          },
+          {
+            "word": "latter",
+            "rank": 128,
+            "test_z": -1.105,
+            "Madison_z": 0.737,
+            "Hamilton_z": -0.226,
+            "favors": "Hamilton",
+            "abs_advantage": 0.9635,
+            "signed_advantage_for_Madison": -0.9635
+          }
+        ]
+      },
+      {
+        "doc_id": "fed_54",
+        "paper_number": 54,
+        "title": "Federalist No. 54: The Apportionment of Members Among the States",
+        "word_count": 1996,
+        "consensus_author": "Madison",
+        "consensus_agreement": 1.0,
+        "vote_breakdown": {
+          "Madison": 9
+        },
+        "predictions": {
+          "burrows_delta": "Madison",
+          "cosine_delta": "Madison",
+          "quadratic_delta": "Madison",
+          "eder_delta": "Madison",
+          "kilgarriff_chi2": "Madison",
+          "mendenhall_curve": "Hamilton",
+          "mosteller_wallace": "Madison",
+          "char_ngrams": "Madison",
+          "general_imposters": "Madison",
+          "composite_ml": "Madison"
+        },
+        "burrows_delta": {
+          "Hamilton": 0.8739,
+          "Madison": 0.8036
+        },
+        "cosine_delta": {
+          "Hamilton": 1.3033,
+          "Madison": 0.6967
+        },
+        "quadratic_delta": {
+          "Hamilton": 1.1448,
+          "Madison": 1.0645
+        },
+        "eder_delta": {
+          "Hamilton": 0.8994,
+          "Madison": 0.805
+        },
+        "kilgarriff_chi2": {
+          "Hamilton": 1852.93,
+          "Madison": 1819.4
+        },
+        "mosteller_wallace_probs": {
+          "Hamilton": 0.0264,
+          "Madison": 0.9736
+        },
+        "general_imposters_scores": {
+          "Hamilton": 0.27,
+          "Madison": 0.84
+        },
+        "composite_ml_probs": {
+          "Hamilton": 0.0847,
+          "Madison": 0.9153
+        },
+        "marker_rates_per_1k": {
+          "upon": 1.002,
+          "on": 9.519,
+          "while": 0.0,
+          "whilst": 0.0,
+          "enough": 0.0,
+          "consequently": 1.002
+        },
+        "top_discriminating_mfw": [
+          {
+            "word": "on",
+            "rank": 29,
+            "test_z": 2.054,
+            "Madison_z": 1.304,
+            "Hamilton_z": -0.353,
+            "favors": "Madison",
+            "abs_advantage": 1.6565,
+            "signed_advantage_for_Madison": 1.6565
+          },
+          {
+            "word": "there",
+            "rank": 45,
+            "test_z": -1.241,
+            "Madison_z": -1.047,
+            "Hamilton_z": 0.348,
+            "favors": "Madison",
+            "abs_advantage": 1.3948,
+            "signed_advantage_for_Madison": 1.3948
+          },
+          {
+            "word": "by",
+            "rank": 13,
+            "test_z": 1.48,
+            "Madison_z": 1.066,
+            "Hamilton_z": -0.169,
+            "favors": "Madison",
+            "abs_advantage": 1.2348,
+            "signed_advantage_for_Madison": 1.2348
+          },
+          {
+            "word": "to",
+            "rank": 3,
+            "test_z": -1.33,
+            "Madison_z": -1.012,
+            "Hamilton_z": 0.217,
+            "favors": "Madison",
+            "abs_advantage": 1.2289,
+            "signed_advantage_for_Madison": 1.2289
+          },
+          {
+            "word": "powers",
+            "rank": 78,
+            "test_z": -0.726,
+            "Madison_z": 0.945,
+            "Hamilton_z": -0.283,
+            "favors": "Hamilton",
+            "abs_advantage": 1.2273,
+            "signed_advantage_for_Madison": -1.2273
+          },
+          {
+            "word": "and",
+            "rank": 4,
+            "test_z": -1.233,
+            "Madison_z": 0.898,
+            "Hamilton_z": -0.252,
+            "favors": "Hamilton",
+            "abs_advantage": 1.15,
+            "signed_advantage_for_Madison": -1.15
+          }
+        ]
+      },
+      {
+        "doc_id": "fed_55",
+        "paper_number": 55,
+        "title": "Federalist No. 55: The Total Number of the House of Representatives",
+        "word_count": 2043,
+        "consensus_author": "Madison",
+        "consensus_agreement": 0.5556,
+        "vote_breakdown": {
+          "Hamilton": 4,
+          "Madison": 5
+        },
+        "predictions": {
+          "burrows_delta": "Hamilton",
+          "cosine_delta": "Madison",
+          "quadratic_delta": "Madison",
+          "eder_delta": "Hamilton",
+          "kilgarriff_chi2": "Madison",
+          "mendenhall_curve": "Hamilton",
+          "mosteller_wallace": "Hamilton",
+          "char_ngrams": "Madison",
+          "general_imposters": "Madison",
+          "composite_ml": "Hamilton"
+        },
+        "burrows_delta": {
+          "Hamilton": 0.8279,
+          "Madison": 0.8507
+        },
+        "cosine_delta": {
+          "Hamilton": 1.1339,
+          "Madison": 0.8661
+        },
+        "quadratic_delta": {
+          "Hamilton": 1.1858,
+          "Madison": 1.1803
+        },
+        "eder_delta": {
+          "Hamilton": 0.8334,
+          "Madison": 0.8833
+        },
+        "kilgarriff_chi2": {
+          "Hamilton": 1320.12,
+          "Madison": 1156.91
+        },
+        "mosteller_wallace_probs": {
+          "Hamilton": 0.6167,
+          "Madison": 0.3833
+        },
+        "general_imposters_scores": {
+          "Hamilton": 0.62,
+          "Madison": 0.64
+        },
+        "composite_ml_probs": {
+          "Hamilton": 0.5546,
+          "Madison": 0.4454
+        },
+        "marker_rates_per_1k": {
+          "upon": 0.0,
+          "on": 4.405,
+          "while": 0.0,
+          "whilst": 0.0,
+          "enough": 0.0,
+          "consequently": 0.0
+        },
+        "top_discriminating_mfw": [
+          {
+            "word": "upon",
+            "rank": 50,
+            "test_z": -1.461,
+            "Madison_z": -1.36,
+            "Hamilton_z": 0.401,
+            "favors": "Madison",
+            "abs_advantage": 1.7609,
+            "signed_advantage_for_Madison": 1.7609
+          },
+          {
+            "word": "by",
+            "rank": 13,
+            "test_z": -0.387,
+            "Madison_z": 1.066,
+            "Hamilton_z": -0.169,
+            "favors": "Hamilton",
+            "abs_advantage": 1.2348,
+            "signed_advantage_for_Madison": -1.2348
+          },
+          {
+            "word": "powers",
+            "rank": 78,
+            "test_z": -0.479,
+            "Madison_z": 0.945,
+            "Hamilton_z": -0.283,
+            "favors": "Hamilton",
+            "abs_advantage": 1.2273,
+            "signed_advantage_for_Madison": -1.2273
+          },
+          {
+            "word": "and",
+            "rank": 4,
+            "test_z": -0.369,
+            "Madison_z": 0.898,
+            "Hamilton_z": -0.252,
+            "favors": "Hamilton",
+            "abs_advantage": 1.15,
+            "signed_advantage_for_Madison": -1.15
+          },
+          {
+            "word": "latter",
+            "rank": 128,
+            "test_z": 0.837,
+            "Madison_z": 0.737,
+            "Hamilton_z": -0.226,
+            "favors": "Madison",
+            "abs_advantage": 0.9635,
+            "signed_advantage_for_Madison": 0.9635
+          },
+          {
+            "word": "this",
+            "rank": 14,
+            "test_z": -0.883,
+            "Madison_z": -0.612,
+            "Hamilton_z": 0.25,
+            "favors": "Madison",
+            "abs_advantage": 0.8624,
+            "signed_advantage_for_Madison": 0.8624
+          }
+        ]
+      },
+      {
+        "doc_id": "fed_56",
+        "paper_number": 56,
+        "title": "Federalist No. 56: The Same Subject Continued (The Total Number of the House of Representatives)",
+        "word_count": 1650,
+        "consensus_author": "Madison",
+        "consensus_agreement": 1.0,
+        "vote_breakdown": {
+          "Madison": 9
+        },
+        "predictions": {
+          "burrows_delta": "Madison",
+          "cosine_delta": "Madison",
+          "quadratic_delta": "Madison",
+          "eder_delta": "Madison",
+          "kilgarriff_chi2": "Madison",
+          "mendenhall_curve": "Hamilton",
+          "mosteller_wallace": "Madison",
+          "char_ngrams": "Madison",
+          "general_imposters": "Madison",
+          "composite_ml": "Madison"
+        },
+        "burrows_delta": {
+          "Hamilton": 0.9792,
+          "Madison": 0.964
+        },
+        "cosine_delta": {
+          "Hamilton": 1.2166,
+          "Madison": 0.7834
+        },
+        "quadratic_delta": {
+          "Hamilton": 1.3479,
+          "Madison": 1.296
+        },
+        "eder_delta": {
+          "Hamilton": 0.9761,
+          "Madison": 0.9548
+        },
+        "kilgarriff_chi2": {
+          "Hamilton": 2007.49,
+          "Madison": 1961.79
+        },
+        "mosteller_wallace_probs": {
+          "Hamilton": 0.2133,
+          "Madison": 0.7867
+        },
+        "general_imposters_scores": {
+          "Hamilton": 0.34,
+          "Madison": 0.83
+        },
+        "composite_ml_probs": {
+          "Hamilton": 0.0148,
+          "Madison": 0.9852
+        },
+        "marker_rates_per_1k": {
+          "upon": 0.0,
+          "on": 6.667,
+          "while": 0.0,
+          "whilst": 0.606,
+          "enough": 0.0,
+          "consequently": 0.0
+        },
+        "top_discriminating_mfw": [
+          {
+            "word": "upon",
+            "rank": 50,
+            "test_z": -1.461,
+            "Madison_z": -1.36,
+            "Hamilton_z": 0.401,
+            "favors": "Madison",
+            "abs_advantage": 1.7609,
+            "signed_advantage_for_Madison": 1.7609
+          },
+          {
+            "word": "by",
+            "rank": 13,
+            "test_z": -0.626,
+            "Madison_z": 1.066,
+            "Hamilton_z": -0.169,
+            "favors": "Hamilton",
+            "abs_advantage": 1.2348,
+            "signed_advantage_for_Madison": -1.2348
+          },
+          {
+            "word": "to",
+            "rank": 3,
+            "test_z": -2.119,
+            "Madison_z": -1.012,
+            "Hamilton_z": 0.217,
+            "favors": "Madison",
+            "abs_advantage": 1.2289,
+            "signed_advantage_for_Madison": 1.2289
+          },
+          {
+            "word": "powers",
+            "rank": 78,
+            "test_z": -0.726,
+            "Madison_z": 0.945,
+            "Hamilton_z": -0.283,
+            "favors": "Hamilton",
+            "abs_advantage": 1.2273,
+            "signed_advantage_for_Madison": -1.2273
+          },
+          {
+            "word": "and",
+            "rank": 4,
+            "test_z": 1.422,
+            "Madison_z": 0.898,
+            "Hamilton_z": -0.252,
+            "favors": "Madison",
+            "abs_advantage": 1.15,
+            "signed_advantage_for_Madison": 1.15
+          },
+          {
+            "word": "latter",
+            "rank": 128,
+            "test_z": -0.303,
+            "Madison_z": 0.737,
+            "Hamilton_z": -0.226,
+            "favors": "Hamilton",
+            "abs_advantage": 0.9635,
+            "signed_advantage_for_Madison": -0.9635
+          }
+        ]
+      },
+      {
+        "doc_id": "fed_57",
+        "paper_number": 57,
+        "title": "Federalist No. 57: The Alleged Tendency of the New Plan to Elevate the Few at the Expense of the Many Considered in Connection with Representation.",
+        "word_count": 2206,
+        "consensus_author": "Madison",
+        "consensus_agreement": 1.0,
+        "vote_breakdown": {
+          "Madison": 9
+        },
+        "predictions": {
+          "burrows_delta": "Madison",
+          "cosine_delta": "Madison",
+          "quadratic_delta": "Madison",
+          "eder_delta": "Madison",
+          "kilgarriff_chi2": "Madison",
+          "mendenhall_curve": "Hamilton",
+          "mosteller_wallace": "Madison",
+          "char_ngrams": "Madison",
+          "general_imposters": "Madison",
+          "composite_ml": "Madison"
+        },
+        "burrows_delta": {
+          "Hamilton": 0.7837,
+          "Madison": 0.7305
+        },
+        "cosine_delta": {
+          "Hamilton": 1.2679,
+          "Madison": 0.7321
+        },
+        "quadratic_delta": {
+          "Hamilton": 1.0082,
+          "Madison": 0.9474
+        },
+        "eder_delta": {
+          "Hamilton": 0.8401,
+          "Madison": 0.7315
+        },
+        "kilgarriff_chi2": {
+          "Hamilton": 1303.72,
+          "Madison": 1143.02
+        },
+        "mosteller_wallace_probs": {
+          "Hamilton": 0.0279,
+          "Madison": 0.9721
+        },
+        "general_imposters_scores": {
+          "Hamilton": 0.39,
+          "Madison": 0.74
+        },
+        "composite_ml_probs": {
+          "Hamilton": 0.1567,
+          "Madison": 0.8433
+        },
+        "marker_rates_per_1k": {
+          "upon": 0.0,
+          "on": 8.613,
+          "while": 0.0,
+          "whilst": 1.36,
+          "enough": 0.0,
+          "consequently": 0.0
+        },
+        "top_discriminating_mfw": [
+          {
+            "word": "upon",
+            "rank": 50,
+            "test_z": -1.461,
+            "Madison_z": -1.36,
+            "Hamilton_z": 0.401,
+            "favors": "Madison",
+            "abs_advantage": 1.7609,
+            "signed_advantage_for_Madison": 1.7609
+          },
+          {
+            "word": "on",
+            "rank": 29,
+            "test_z": 1.698,
+            "Madison_z": 1.304,
+            "Hamilton_z": -0.353,
+            "favors": "Madison",
+            "abs_advantage": 1.6565,
+            "signed_advantage_for_Madison": 1.6565
+          },
+          {
+            "word": "powers",
+            "rank": 78,
+            "test_z": -0.726,
+            "Madison_z": 0.945,
+            "Hamilton_z": -0.283,
+            "favors": "Hamilton",
+            "abs_advantage": 1.2273,
+            "signed_advantage_for_Madison": -1.2273
+          },
+          {
+            "word": "by",
+            "rank": 13,
+            "test_z": 0.968,
+            "Madison_z": 1.066,
+            "Hamilton_z": -0.169,
+            "favors": "Madison",
+            "abs_advantage": 1.038,
+            "signed_advantage_for_Madison": 1.038
+          },
+          {
+            "word": "and",
+            "rank": 4,
+            "test_z": -0.178,
+            "Madison_z": 0.898,
+            "Hamilton_z": -0.252,
+            "favors": "Hamilton",
+            "abs_advantage": 1.0011,
+            "signed_advantage_for_Madison": -1.0011
+          },
+          {
+            "word": "latter",
+            "rank": 128,
+            "test_z": -1.105,
+            "Madison_z": 0.737,
+            "Hamilton_z": -0.226,
+            "favors": "Hamilton",
+            "abs_advantage": 0.9635,
+            "signed_advantage_for_Madison": -0.9635
+          }
+        ]
+      },
+      {
+        "doc_id": "fed_58",
+        "paper_number": 58,
+        "title": "Federalist No. 58: Objection That The Number of Members Will Not Be Augmented as the Progress of Population Demands.",
+        "word_count": 2080,
+        "consensus_author": "Madison",
+        "consensus_agreement": 1.0,
+        "vote_breakdown": {
+          "Madison": 9
+        },
+        "predictions": {
+          "burrows_delta": "Madison",
+          "cosine_delta": "Madison",
+          "quadratic_delta": "Madison",
+          "eder_delta": "Madison",
+          "kilgarriff_chi2": "Madison",
+          "mendenhall_curve": "Hamilton",
+          "mosteller_wallace": "Madison",
+          "char_ngrams": "Madison",
+          "general_imposters": "Madison",
+          "composite_ml": "Madison"
+        },
+        "burrows_delta": {
+          "Hamilton": 0.7549,
+          "Madison": 0.6847
+        },
+        "cosine_delta": {
+          "Hamilton": 1.3081,
+          "Madison": 0.6919
+        },
+        "quadratic_delta": {
+          "Hamilton": 1.0695,
+          "Madison": 0.9898
+        },
+        "eder_delta": {
+          "Hamilton": 0.7413,
+          "Madison": 0.6452
+        },
+        "kilgarriff_chi2": {
+          "Hamilton": 1213.38,
+          "Madison": 1027.11
+        },
+        "mosteller_wallace_probs": {
+          "Hamilton": 0.0525,
+          "Madison": 0.9475
+        },
+        "general_imposters_scores": {
+          "Hamilton": 0.33,
+          "Madison": 0.86
+        },
+        "composite_ml_probs": {
+          "Hamilton": 0.3962,
+          "Madison": 0.6038
+        },
+        "marker_rates_per_1k": {
+          "upon": 0.0,
+          "on": 8.654,
+          "while": 0.0,
+          "whilst": 0.0,
+          "enough": 0.0,
+          "consequently": 0.481
+        },
+        "top_discriminating_mfw": [
+          {
+            "word": "upon",
+            "rank": 50,
+            "test_z": -1.461,
+            "Madison_z": -1.36,
+            "Hamilton_z": 0.401,
+            "favors": "Madison",
+            "abs_advantage": 1.7609,
+            "signed_advantage_for_Madison": 1.7609
+          },
+          {
+            "word": "on",
+            "rank": 29,
+            "test_z": 1.714,
+            "Madison_z": 1.304,
+            "Hamilton_z": -0.353,
+            "favors": "Madison",
+            "abs_advantage": 1.6565,
+            "signed_advantage_for_Madison": 1.6565
+          },
+          {
+            "word": "there",
+            "rank": 45,
+            "test_z": -0.986,
+            "Madison_z": -1.047,
+            "Hamilton_z": 0.348,
+            "favors": "Madison",
+            "abs_advantage": 1.2724,
+            "signed_advantage_for_Madison": 1.2724
+          },
+          {
+            "word": "to",
+            "rank": 3,
+            "test_z": -1.514,
+            "Madison_z": -1.012,
+            "Hamilton_z": 0.217,
+            "favors": "Madison",
+            "abs_advantage": 1.2289,
+            "signed_advantage_for_Madison": 1.2289
+          },
+          {
+            "word": "powers",
+            "rank": 78,
+            "test_z": -0.726,
+            "Madison_z": 0.945,
+            "Hamilton_z": -0.283,
+            "favors": "Hamilton",
+            "abs_advantage": 1.2273,
+            "signed_advantage_for_Madison": -1.2273
+          },
+          {
+            "word": "and",
+            "rank": 4,
+            "test_z": -0.543,
+            "Madison_z": 0.898,
+            "Hamilton_z": -0.252,
+            "favors": "Hamilton",
+            "abs_advantage": 1.15,
+            "signed_advantage_for_Madison": -1.15
+          }
+        ]
+      },
+      {
+        "doc_id": "fed_62",
+        "paper_number": 62,
+        "title": "Federalist No. 62: The Senate",
+        "word_count": 2387,
+        "consensus_author": "Madison",
+        "consensus_agreement": 1.0,
+        "vote_breakdown": {
+          "Madison": 9
+        },
+        "predictions": {
+          "burrows_delta": "Madison",
+          "cosine_delta": "Madison",
+          "quadratic_delta": "Madison",
+          "eder_delta": "Madison",
+          "kilgarriff_chi2": "Madison",
+          "mendenhall_curve": "Hamilton",
+          "mosteller_wallace": "Madison",
+          "char_ngrams": "Madison",
+          "general_imposters": "Madison",
+          "composite_ml": "Madison"
+        },
+        "burrows_delta": {
+          "Hamilton": 0.7451,
+          "Madison": 0.7067
+        },
+        "cosine_delta": {
+          "Hamilton": 1.2274,
+          "Madison": 0.7726
+        },
+        "quadratic_delta": {
+          "Hamilton": 0.9472,
+          "Madison": 0.9078
+        },
+        "eder_delta": {
+          "Hamilton": 0.7849,
+          "Madison": 0.7037
+        },
+        "kilgarriff_chi2": {
+          "Hamilton": 976.82,
+          "Madison": 875.36
+        },
+        "mosteller_wallace_probs": {
+          "Hamilton": 0.044,
+          "Madison": 0.956
+        },
+        "general_imposters_scores": {
+          "Hamilton": 0.29,
+          "Madison": 0.86
+        },
+        "composite_ml_probs": {
+          "Hamilton": 0.0349,
+          "Madison": 0.9651
+        },
+        "marker_rates_per_1k": {
+          "upon": 0.0,
+          "on": 7.96,
+          "while": 0.0,
+          "whilst": 0.0,
+          "enough": 0.0,
+          "consequently": 1.257
+        },
+        "top_discriminating_mfw": [
+          {
+            "word": "upon",
+            "rank": 50,
+            "test_z": -1.461,
+            "Madison_z": -1.36,
+            "Hamilton_z": 0.401,
+            "favors": "Madison",
+            "abs_advantage": 1.7609,
+            "signed_advantage_for_Madison": 1.7609
+          },
+          {
+            "word": "on",
+            "rank": 29,
+            "test_z": 1.442,
+            "Madison_z": 1.304,
+            "Hamilton_z": -0.353,
+            "favors": "Madison",
+            "abs_advantage": 1.6565,
+            "signed_advantage_for_Madison": 1.6565
+          },
+          {
+            "word": "there",
+            "rank": 45,
+            "test_z": -1.519,
+            "Madison_z": -1.047,
+            "Hamilton_z": 0.348,
+            "favors": "Madison",
+            "abs_advantage": 1.3948,
+            "signed_advantage_for_Madison": 1.3948
+          },
+          {
+            "word": "by",
+            "rank": 13,
+            "test_z": 1.088,
+            "Madison_z": 1.066,
+            "Hamilton_z": -0.169,
+            "favors": "Madison",
+            "abs_advantage": 1.2348,
+            "signed_advantage_for_Madison": 1.2348
+          },
+          {
+            "word": "powers",
+            "rank": 78,
+            "test_z": -0.302,
+            "Madison_z": 0.945,
+            "Hamilton_z": -0.283,
+            "favors": "Hamilton",
+            "abs_advantage": 1.2273,
+            "signed_advantage_for_Madison": -1.2273
+          },
+          {
+            "word": "several",
+            "rank": 129,
+            "test_z": -1.025,
+            "Madison_z": 0.707,
+            "Hamilton_z": -0.167,
+            "favors": "Hamilton",
+            "abs_advantage": 0.8739,
+            "signed_advantage_for_Madison": -0.8739
+          }
+        ]
+      },
+      {
+        "doc_id": "fed_63",
+        "paper_number": 63,
+        "title": "Federalist No. 63: The Senate Continued",
+        "word_count": 3039,
+        "consensus_author": "Madison",
+        "consensus_agreement": 1.0,
+        "vote_breakdown": {
+          "Madison": 9
+        },
+        "predictions": {
+          "burrows_delta": "Madison",
+          "cosine_delta": "Madison",
+          "quadratic_delta": "Madison",
+          "eder_delta": "Madison",
+          "kilgarriff_chi2": "Madison",
+          "mendenhall_curve": "Madison",
+          "mosteller_wallace": "Madison",
+          "char_ngrams": "Madison",
+          "general_imposters": "Madison",
+          "composite_ml": "Madison"
+        },
+        "burrows_delta": {
+          "Hamilton": 0.7158,
+          "Madison": 0.6537
+        },
+        "cosine_delta": {
+          "Hamilton": 1.3087,
+          "Madison": 0.6913
+        },
+        "quadratic_delta": {
+          "Hamilton": 0.9993,
+          "Madison": 0.9157
+        },
+        "eder_delta": {
+          "Hamilton": 0.68,
+          "Madison": 0.6197
+        },
+        "kilgarriff_chi2": {
+          "Hamilton": 1316.16,
+          "Madison": 1169.33
+        },
+        "mosteller_wallace_probs": {
+          "Hamilton": 0.1208,
+          "Madison": 0.8792
+        },
+        "general_imposters_scores": {
+          "Hamilton": 0.18,
+          "Madison": 0.9
+        },
+        "composite_ml_probs": {
+          "Hamilton": 0.0856,
+          "Madison": 0.9144
+        },
+        "marker_rates_per_1k": {
+          "upon": 0.0,
+          "on": 6.581,
+          "while": 0.0,
+          "whilst": 0.329,
+          "enough": 0.0,
+          "consequently": 0.0
+        },
+        "top_discriminating_mfw": [
+          {
+            "word": "upon",
+            "rank": 50,
+            "test_z": -1.461,
+            "Madison_z": -1.36,
+            "Hamilton_z": 0.401,
+            "favors": "Madison",
+            "abs_advantage": 1.7609,
+            "signed_advantage_for_Madison": 1.7609
+          },
+          {
+            "word": "by",
+            "rank": 13,
+            "test_z": 2.615,
+            "Madison_z": 1.066,
+            "Hamilton_z": -0.169,
+            "favors": "Madison",
+            "abs_advantage": 1.2348,
+            "signed_advantage_for_Madison": 1.2348
+          },
+          {
+            "word": "to",
+            "rank": 3,
+            "test_z": -1.547,
+            "Madison_z": -1.012,
+            "Hamilton_z": 0.217,
+            "favors": "Madison",
+            "abs_advantage": 1.2289,
+            "signed_advantage_for_Madison": 1.2289
+          },
+          {
+            "word": "powers",
+            "rank": 78,
+            "test_z": -0.56,
+            "Madison_z": 0.945,
+            "Hamilton_z": -0.283,
+            "favors": "Hamilton",
+            "abs_advantage": 1.2273,
+            "signed_advantage_for_Madison": -1.2273
+          },
+          {
+            "word": "and",
+            "rank": 4,
+            "test_z": -0.586,
+            "Madison_z": 0.898,
+            "Hamilton_z": -0.252,
+            "favors": "Hamilton",
+            "abs_advantage": 1.15,
+            "signed_advantage_for_Madison": -1.15
+          },
+          {
+            "word": "latter",
+            "rank": 128,
+            "test_z": 1.506,
+            "Madison_z": 0.737,
+            "Hamilton_z": -0.226,
+            "favors": "Madison",
+            "abs_advantage": 0.9635,
+            "signed_advantage_for_Madison": 0.9635
+          }
+        ]
+      }
+    ],
+    "joint_3_papers_attribution": [
+      {
+        "doc_id": "fed_18",
+        "paper_number": 18,
+        "title": "Federalist No. 18: The Same Subject Continued (The Insufficiency of the Present Confederation to Preserve the Union) For the New York Packet. Friday,",
+        "word_count": 2104,
+        "consensus_author": "Madison",
+        "consensus_agreement": 0.7778,
+        "predictions": {
+          "burrows_delta": "Madison",
+          "cosine_delta": "Madison",
+          "quadratic_delta": "Madison",
+          "eder_delta": "Madison",
+          "kilgarriff_chi2": "Hamilton",
+          "mendenhall_curve": "Madison",
+          "mosteller_wallace": "Madison",
+          "char_ngrams": "Madison",
+          "general_imposters": "Hamilton",
+          "composite_ml": "Madison"
+        },
+        "burrows_delta": {
+          "Hamilton": 1.0384,
+          "Madison": 0.9483
+        },
+        "cosine_delta": {
+          "Hamilton": 1.2942,
+          "Madison": 0.7058
+        },
+        "mosteller_wallace_probs": {
+          "Hamilton": 0.0766,
+          "Madison": 0.9234
+        },
+        "general_imposters_scores": {
+          "Hamilton": 0.72,
+          "Madison": 0.47
+        }
+      },
+      {
+        "doc_id": "fed_19",
+        "paper_number": 19,
+        "title": "Federalist No. 19: The Same Subject Continued (The Insufficiency of the Present Confederation to Preserve the Union)",
+        "word_count": 2043,
+        "consensus_author": "Madison",
+        "consensus_agreement": 0.7778,
+        "predictions": {
+          "burrows_delta": "Madison",
+          "cosine_delta": "Madison",
+          "quadratic_delta": "Madison",
+          "eder_delta": "Madison",
+          "kilgarriff_chi2": "Hamilton",
+          "mendenhall_curve": "Madison",
+          "mosteller_wallace": "Madison",
+          "char_ngrams": "Madison",
+          "general_imposters": "Hamilton",
+          "composite_ml": "Madison"
+        },
+        "burrows_delta": {
+          "Hamilton": 0.922,
+          "Madison": 0.8459
+        },
+        "cosine_delta": {
+          "Hamilton": 1.2785,
+          "Madison": 0.7215
+        },
+        "mosteller_wallace_probs": {
+          "Hamilton": 0.251,
+          "Madison": 0.749
+        },
+        "general_imposters_scores": {
+          "Hamilton": 0.77,
+          "Madison": 0.35
+        }
+      },
+      {
+        "doc_id": "fed_20",
+        "paper_number": 20,
+        "title": "Federalist No. 20: The Same Subject Continued (The Insufficiency of the Present Confederation to Preserve the Union)",
+        "word_count": 1518,
+        "consensus_author": "Madison",
+        "consensus_agreement": 0.7778,
+        "predictions": {
+          "burrows_delta": "Madison",
+          "cosine_delta": "Madison",
+          "quadratic_delta": "Madison",
+          "eder_delta": "Madison",
+          "kilgarriff_chi2": "Hamilton",
+          "mendenhall_curve": "Madison",
+          "mosteller_wallace": "Madison",
+          "char_ngrams": "Madison",
+          "general_imposters": "Hamilton",
+          "composite_ml": "Madison"
+        },
+        "burrows_delta": {
+          "Hamilton": 0.9324,
+          "Madison": 0.8457
+        },
+        "cosine_delta": {
+          "Hamilton": 1.27,
+          "Madison": 0.73
+        },
+        "mosteller_wallace_probs": {
+          "Hamilton": 0.3445,
+          "Madison": 0.6555
+        },
+        "general_imposters_scores": {
+          "Hamilton": 0.68,
+          "Madison": 0.44
+        }
+      }
+    ],
+    "pca_analysis": {
+      "explained_variance_ratio": [
+        0.0682,
+        0.0604,
+        0.0547
+      ],
+      "pc1_top_loadings": [
+        {
+          "word": "and",
+          "loading": 0.1946
+        },
+        {
+          "word": "this",
+          "loading": -0.1868
+        },
+        {
+          "word": "their",
+          "loading": 0.1842
+        },
+        {
+          "word": "power",
+          "loading": -0.1803
+        },
+        {
+          "word": "more",
+          "loading": 0.1797
+        },
+        {
+          "word": "upon",
+          "loading": -0.1599
+        },
+        {
+          "word": "themselves",
+          "loading": 0.1589
+        },
+        {
+          "word": "law",
+          "loading": -0.1554
+        },
+        {
+          "word": "the",
+          "loading": -0.1554
+        },
+        {
+          "word": "interests",
+          "loading": 0.1471
+        }
+      ],
+      "pc2_top_loadings": [
+        {
+          "word": "federal",
+          "loading": 0.2114
+        },
+        {
+          "word": "on",
+          "loading": 0.2022
+        },
+        {
+          "word": "upon",
+          "loading": -0.1896
+        },
+        {
+          "word": "latter",
+          "loading": 0.1518
+        },
+        {
+          "word": "state",
+          "loading": 0.1518
+        },
+        {
+          "word": "constitution",
+          "loading": 0.1478
+        },
+        {
+          "word": "several",
+          "loading": 0.1471
+        },
+        {
+          "word": "he",
+          "loading": -0.1399
+        },
+        {
+          "word": "would",
+          "loading": -0.1399
+        },
+        {
+          "word": "states",
+          "loading": 0.138
+        }
+      ],
+      "points": [
+        {
+          "doc_id": "fed_01",
+          "label": "Hamilton",
+          "pc1": 0.7873,
+          "pc2": -2.233,
+          "pc3": -1.5878
+        },
+        {
+          "doc_id": "fed_02",
+          "label": "Jay",
+          "pc1": 6.0837,
+          "pc2": 0.4166,
+          "pc3": 2.6399
+        },
+        {
+          "doc_id": "fed_03",
+          "label": "Jay",
+          "pc1": 6.4565,
+          "pc2": 1.5912,
+          "pc3": -3.1549
+        },
+        {
+          "doc_id": "fed_04",
+          "label": "Jay",
+          "pc1": 10.0339,
+          "pc2": -0.9097,
+          "pc3": -5.2998
+        },
+        {
+          "doc_id": "fed_05",
+          "label": "Jay",
+          "pc1": 10.6123,
+          "pc2": -1.6127,
+          "pc3": -3.1976
+        },
+        {
+          "doc_id": "fed_06",
+          "label": "Hamilton",
+          "pc1": 3.1756,
+          "pc2": -3.1917,
+          "pc3": 2.3676
+        },
+        {
+          "doc_id": "fed_07",
+          "label": "Hamilton",
+          "pc1": 0.9454,
+          "pc2": -2.087,
+          "pc3": -0.391
+        },
+        {
+          "doc_id": "fed_08",
+          "label": "Hamilton",
+          "pc1": 1.3017,
+          "pc2": -1.2478,
+          "pc3": 0.904
+        },
+        {
+          "doc_id": "fed_09",
+          "label": "Hamilton",
+          "pc1": 0.606,
+          "pc2": -1.715,
+          "pc3": 1.6337
+        },
+        {
+          "doc_id": "fed_10",
+          "label": "Madison",
+          "pc1": 4.6274,
+          "pc2": 0.9715,
+          "pc3": -1.0927
+        },
+        {
+          "doc_id": "fed_11",
+          "label": "Hamilton",
+          "pc1": 3.2153,
+          "pc2": -4.5635,
+          "pc3": -2.1169
+        },
+        {
+          "doc_id": "fed_12",
+          "label": "Hamilton",
+          "pc1": 1.9739,
+          "pc2": -2.1643,
+          "pc3": -1.2988
+        },
+        {
+          "doc_id": "fed_13",
+          "label": "Hamilton",
+          "pc1": 4.4965,
+          "pc2": -2.4735,
+          "pc3": -5.4315
+        },
+        {
+          "doc_id": "fed_14",
+          "label": "Madison",
+          "pc1": 1.5479,
+          "pc2": 1.5554,
+          "pc3": -1.5739
+        },
+        {
+          "doc_id": "fed_15",
+          "label": "Hamilton",
+          "pc1": -0.2367,
+          "pc2": -2.5287,
+          "pc3": -1.9512
+        },
+        {
+          "doc_id": "fed_16",
+          "label": "Hamilton",
+          "pc1": -1.3202,
+          "pc2": -2.8062,
+          "pc3": -1.7748
+        },
+        {
+          "doc_id": "fed_17",
+          "label": "Hamilton",
+          "pc1": 1.5401,
+          "pc2": -0.9405,
+          "pc3": -2.1105
+        },
+        {
+          "doc_id": "fed_18",
+          "label": "Joint",
+          "pc1": 4.4213,
+          "pc2": 0.3013,
+          "pc3": 6.4523
+        },
+        {
+          "doc_id": "fed_19",
+          "label": "Joint",
+          "pc1": 2.5283,
+          "pc2": -0.2386,
+          "pc3": 4.625
+        },
+        {
+          "doc_id": "fed_20",
+          "label": "Joint",
+          "pc1": 3.322,
+          "pc2": 0.5725,
+          "pc3": 4.0282
+        },
+        {
+          "doc_id": "fed_21",
+          "label": "Hamilton",
+          "pc1": -2.4301,
+          "pc2": -2.373,
+          "pc3": -2.2627
+        },
+        {
+          "doc_id": "fed_22",
+          "label": "Hamilton",
+          "pc1": -0.7429,
+          "pc2": -2.4996,
+          "pc3": -0.6416
+        },
+        {
+          "doc_id": "fed_23",
+          "label": "Hamilton",
+          "pc1": -1.3602,
+          "pc2": 1.2869,
+          "pc3": -4.3588
+        },
+        {
+          "doc_id": "fed_24",
+          "label": "Hamilton",
+          "pc1": -1.3169,
+          "pc2": -3.7834,
+          "pc3": 1.5226
+        },
+        {
+          "doc_id": "fed_25",
+          "label": "Hamilton",
+          "pc1": 0.1386,
+          "pc2": -1.7901,
+          "pc3": -0.0486
+        },
+        {
+          "doc_id": "fed_26",
+          "label": "Hamilton",
+          "pc1": -1.0996,
+          "pc2": -3.4025,
+          "pc3": 0.6837
+        },
+        {
+          "doc_id": "fed_27",
+          "label": "Hamilton",
+          "pc1": -1.3173,
+          "pc2": 1.4226,
+          "pc3": -5.663
+        },
+        {
+          "doc_id": "fed_28",
+          "label": "Hamilton",
+          "pc1": -0.1548,
+          "pc2": -1.0232,
+          "pc3": -4.049
+        },
+        {
+          "doc_id": "fed_29",
+          "label": "Hamilton",
+          "pc1": -1.332,
+          "pc2": -2.6355,
+          "pc3": -2.1478
+        },
+        {
+          "doc_id": "fed_30",
+          "label": "Hamilton",
+          "pc1": -2.0014,
+          "pc2": -3.0087,
+          "pc3": -2.9731
+        },
+        {
+          "doc_id": "fed_31",
+          "label": "Hamilton",
+          "pc1": -2.0001,
+          "pc2": 0.0736,
+          "pc3": -4.3276
+        },
+        {
+          "doc_id": "fed_32",
+          "label": "Hamilton",
+          "pc1": -6.4428,
+          "pc2": 1.2656,
+          "pc3": -0.9523
+        },
+        {
+          "doc_id": "fed_33",
+          "label": "Hamilton",
+          "pc1": -6.8033,
+          "pc2": 2.6918,
+          "pc3": -2.1877
+        },
+        {
+          "doc_id": "fed_34",
+          "label": "Hamilton",
+          "pc1": -1.4888,
+          "pc2": -2.2397,
+          "pc3": -3.3822
+        },
+        {
+          "doc_id": "fed_35",
+          "label": "Hamilton",
+          "pc1": 1.7749,
+          "pc2": -1.2159,
+          "pc3": -2.1781
+        },
+        {
+          "doc_id": "fed_36",
+          "label": "Hamilton",
+          "pc1": -2.0853,
+          "pc2": -0.1687,
+          "pc3": -3.3177
+        },
+        {
+          "doc_id": "fed_37",
+          "label": "Madison",
+          "pc1": 1.8814,
+          "pc2": 1.5329,
+          "pc3": 0.5077
+        },
+        {
+          "doc_id": "fed_38",
+          "label": "Madison",
+          "pc1": 0.7992,
+          "pc2": -0.112,
+          "pc3": 1.9874
+        },
+        {
+          "doc_id": "fed_39",
+          "label": "Madison",
+          "pc1": -0.5515,
+          "pc2": 5.3784,
+          "pc3": 0.1898
+        },
+        {
+          "doc_id": "fed_40",
+          "label": "Madison",
+          "pc1": 0.6222,
+          "pc2": 2.7575,
+          "pc3": 2.836
+        },
+        {
+          "doc_id": "fed_41",
+          "label": "Madison",
+          "pc1": -0.8744,
+          "pc2": 1.9767,
+          "pc3": 0.5647
+        },
+        {
+          "doc_id": "fed_42",
+          "label": "Madison",
+          "pc1": -2.0358,
+          "pc2": 4.0019,
+          "pc3": 0.9145
+        },
+        {
+          "doc_id": "fed_43",
+          "label": "Madison",
+          "pc1": -1.6888,
+          "pc2": 3.5253,
+          "pc3": -0.3397
+        },
+        {
+          "doc_id": "fed_44",
+          "label": "Madison",
+          "pc1": -3.2141,
+          "pc2": 6.4177,
+          "pc3": 1.1445
+        },
+        {
+          "doc_id": "fed_45",
+          "label": "Madison",
+          "pc1": 1.7735,
+          "pc2": 5.8756,
+          "pc3": -2.55
+        },
+        {
+          "doc_id": "fed_46",
+          "label": "Madison",
+          "pc1": 3.9283,
+          "pc2": 4.3852,
+          "pc3": -2.0496
+        },
+        {
+          "doc_id": "fed_47",
+          "label": "Madison",
+          "pc1": -2.7713,
+          "pc2": 2.776,
+          "pc3": 9.2852
+        },
+        {
+          "doc_id": "fed_48",
+          "label": "Madison",
+          "pc1": 0.7721,
+          "pc2": 3.3823,
+          "pc3": 6.3841
+        },
+        {
+          "doc_id": "fed_49",
+          "label": "Disputed",
+          "pc1": 1.8543,
+          "pc2": 1.4,
+          "pc3": 1.8314
+        },
+        {
+          "doc_id": "fed_50",
+          "label": "Disputed",
+          "pc1": 2.159,
+          "pc2": 2.6061,
+          "pc3": 8.2084
+        },
+        {
+          "doc_id": "fed_51",
+          "label": "Disputed",
+          "pc1": 1.5134,
+          "pc2": 6.502,
+          "pc3": -0.7373
+        },
+        {
+          "doc_id": "fed_52",
+          "label": "Disputed",
+          "pc1": 0.8599,
+          "pc2": 4.7081,
+          "pc3": 2.4223
+        },
+        {
+          "doc_id": "fed_53",
+          "label": "Disputed",
+          "pc1": 1.24,
+          "pc2": 3.4616,
+          "pc3": 1.3041
+        },
+        {
+          "doc_id": "fed_54",
+          "label": "Disputed",
+          "pc1": 0.4188,
+          "pc2": 4.4133,
+          "pc3": 2.7735
+        },
+        {
+          "doc_id": "fed_55",
+          "label": "Disputed",
+          "pc1": 2.7313,
+          "pc2": 1.1347,
+          "pc3": 0.4107
+        },
+        {
+          "doc_id": "fed_56",
+          "label": "Disputed",
+          "pc1": 2.6251,
+          "pc2": 5.1464,
+          "pc3": -1.6988
+        },
+        {
+          "doc_id": "fed_57",
+          "label": "Disputed",
+          "pc1": 2.7216,
+          "pc2": 2.6655,
+          "pc3": -0.044
+        },
+        {
+          "doc_id": "fed_58",
+          "label": "Disputed",
+          "pc1": 0.4441,
+          "pc2": 3.6857,
+          "pc3": 1.2044
+        },
+        {
+          "doc_id": "fed_59",
+          "label": "Hamilton",
+          "pc1": -4.1062,
+          "pc2": -0.1803,
+          "pc3": -1.5124
+        },
+        {
+          "doc_id": "fed_60",
+          "label": "Hamilton",
+          "pc1": -0.6864,
+          "pc2": -1.8653,
+          "pc3": -2.8451
+        },
+        {
+          "doc_id": "fed_61",
+          "label": "Hamilton",
+          "pc1": -1.9328,
+          "pc2": -0.6582,
+          "pc3": -0.0073
+        },
+        {
+          "doc_id": "fed_62",
+          "label": "Disputed",
+          "pc1": 0.4185,
+          "pc2": 1.5032,
+          "pc3": -1.0556
+        },
+        {
+          "doc_id": "fed_63",
+          "label": "Disputed",
+          "pc1": 0.5111,
+          "pc2": 2.1868,
+          "pc3": 1.2284
+        },
+        {
+          "doc_id": "fed_64",
+          "label": "Jay",
+          "pc1": 4.1378,
+          "pc2": -1.0094,
+          "pc3": -0.6876
+        },
+        {
+          "doc_id": "fed_65",
+          "label": "Hamilton",
+          "pc1": -1.7575,
+          "pc2": -2.6812,
+          "pc3": 0.3241
+        },
+        {
+          "doc_id": "fed_66",
+          "label": "Hamilton",
+          "pc1": -1.4469,
+          "pc2": -3.0646,
+          "pc3": 0.972
+        },
+        {
+          "doc_id": "fed_67",
+          "label": "Hamilton",
+          "pc1": -4.1405,
+          "pc2": -2.7091,
+          "pc3": 2.4604
+        },
+        {
+          "doc_id": "fed_68",
+          "label": "Hamilton",
+          "pc1": 0.2527,
+          "pc2": -2.3996,
+          "pc3": 1.1573
+        },
+        {
+          "doc_id": "fed_69",
+          "label": "Hamilton",
+          "pc1": -3.1447,
+          "pc2": -1.6619,
+          "pc3": 0.8707
+        },
+        {
+          "doc_id": "fed_70",
+          "label": "Hamilton",
+          "pc1": 0.9181,
+          "pc2": -3.2488,
+          "pc3": 1.3806
+        },
+        {
+          "doc_id": "fed_71",
+          "label": "Hamilton",
+          "pc1": 1.3951,
+          "pc2": -4.6617,
+          "pc3": 3.4952
+        },
+        {
+          "doc_id": "fed_72",
+          "label": "Hamilton",
+          "pc1": 1.3353,
+          "pc2": -6.6718,
+          "pc3": 3.3859
+        },
+        {
+          "doc_id": "fed_73",
+          "label": "Hamilton",
+          "pc1": -2.4335,
+          "pc2": -4.0314,
+          "pc3": 3.2741
+        },
+        {
+          "doc_id": "fed_74",
+          "label": "Hamilton",
+          "pc1": -3.9628,
+          "pc2": -3.5237,
+          "pc3": 1.2395
+        },
+        {
+          "doc_id": "fed_75",
+          "label": "Hamilton",
+          "pc1": -2.4434,
+          "pc2": -2.2361,
+          "pc3": 2.3823
+        },
+        {
+          "doc_id": "fed_76",
+          "label": "Hamilton",
+          "pc1": -1.8653,
+          "pc2": -4.9221,
+          "pc3": 2.0251
+        },
+        {
+          "doc_id": "fed_77",
+          "label": "Hamilton",
+          "pc1": -3.5246,
+          "pc2": -5.0579,
+          "pc3": 1.7931
+        },
+        {
+          "doc_id": "fed_78",
+          "label": "Hamilton",
+          "pc1": -2.0746,
+          "pc2": 0.4072,
+          "pc3": 0.3152
+        },
+        {
+          "doc_id": "fed_79",
+          "label": "Hamilton",
+          "pc1": -1.5122,
+          "pc2": -2.3028,
+          "pc3": -0.1158
+        },
+        {
+          "doc_id": "fed_80",
+          "label": "Hamilton",
+          "pc1": -5.0836,
+          "pc2": 5.9327,
+          "pc3": -4.3462
+        },
+        {
+          "doc_id": "fed_81",
+          "label": "Hamilton",
+          "pc1": -5.9079,
+          "pc2": 0.5528,
+          "pc3": -0.0774
+        },
+        {
+          "doc_id": "fed_82",
+          "label": "Hamilton",
+          "pc1": -5.1097,
+          "pc2": 3.3886,
+          "pc3": -3.6962
+        },
+        {
+          "doc_id": "fed_83",
+          "label": "Hamilton",
+          "pc1": -3.6237,
+          "pc2": 0.5372,
+          "pc3": -0.1299
+        },
+        {
+          "doc_id": "fed_84",
+          "label": "Hamilton",
+          "pc1": -3.2828,
+          "pc2": 2.4334,
+          "pc3": -0.5627
+        },
+        {
+          "doc_id": "fed_85",
+          "label": "Hamilton",
+          "pc1": -3.5937,
+          "pc2": -0.9737,
+          "pc3": -1.2022
+        }
+      ]
+    }
+  },
+  "literature_benchmark": {
+    "corpus_summary": {
+      "authors": [
+        "Arthur Conan Doyle",
+        "Charles Dickens",
+        "Charlotte Bront\u00eb",
+        "H. G. Wells",
+        "Jane Austen"
+      ],
+      "total_novels": 15,
+      "total_segments": 45,
+      "words_per_segment": 10000
+    },
+    "author_profiles": {
+      "Arthur Conan Doyle": {
+        "document_count": 9,
+        "total_words": 90867,
+        "lexical_means": {
+          "token_count": 10096.3333,
+          "type_count": 2173.0,
+          "mean_word_length": 4.2047,
+          "std_word_length": 2.251,
+          "ttr": 0.2152,
+          "root_ttr_guiraud": 21.6229,
+          "log_ttr_herdan": 0.833,
+          "mattr": 0.5134,
+          "hapax_ratio": 0.5984,
+          "dislegomena_ratio": 0.1585,
+          "yules_k": 93.8939,
+          "simpsons_d": 0.0094,
+          "honores_r": 2303.5812,
+          "brunets_w": 13.4283
+        },
+        "syntactic_means": {
+          "sentence_count": 500.8889,
+          "mean_sentence_length": 20.3474,
+          "std_sentence_length": 14.0515,
+          "median_sentence_length": 17.5556,
+          "iqr_sentence_length": 17.4444,
+          "short_sentence_ratio": 0.3413,
+          "long_sentence_ratio": 0.147,
+          "comma_rate_per_1k": 68.2508,
+          "semicolon_rate_per_1k": 1.2209,
+          "colon_rate_per_1k": 0.6164,
+          "dash_rate_per_1k": 2.9768,
+          "question_rate_per_1k": 7.6072,
+          "exclamation_rate_per_1k": 2.8816,
+          "paren_rate_per_1k": 0.7229,
+          "quote_rate_per_1k": 46.1247,
+          "mean_syllables_per_word": 1.348,
+          "complex_word_ratio": 0.079,
+          "flesch_reading_ease": 72.1385,
+          "flesch_kincaid_grade": 8.2523,
+          "coleman_liau_index": 7.4551,
+          "automated_readability_index": 8.5478,
+          "gunning_fog_index": 11.3006
+        },
+        "marker_rates_per_1k": {
+          "upon": 4.5661,
+          "on": 3.6655,
+          "while": 0.6049,
+          "whilst": 0.0,
+          "very": 3.3919,
+          "quite": 0.7274,
+          "rather": 0.6936,
+          "indeed": 0.528,
+          "perhaps": 0.3964,
+          "never": 1.0131,
+          "always": 0.5065,
+          "already": 0.4511,
+          "towards": 0.1985,
+          "toward": 0.0,
+          "within": 0.3303,
+          "without": 0.3857,
+          "though": 0.528,
+          "although": 0.044
+        },
+        "mendenhall_curve_1_to_15": [
+          0.0495,
+          0.187,
+          0.2225,
+          0.1935,
+          0.1101,
+          0.0807,
+          0.0604,
+          0.039,
+          0.0271,
+          0.0157,
+          0.0083,
+          0.0037,
+          0.0018,
+          0.0006,
+          0.0002
+        ]
+      },
+      "Charles Dickens": {
+        "document_count": 9,
+        "total_words": 91168,
+        "lexical_means": {
+          "token_count": 10129.7778,
+          "type_count": 2197.2222,
+          "mean_word_length": 4.2469,
+          "std_word_length": 2.2437,
+          "ttr": 0.2169,
+          "root_ttr_guiraud": 21.8313,
+          "log_ttr_herdan": 0.8342,
+          "mattr": 0.5005,
+          "hapax_ratio": 0.6119,
+          "dislegomena_ratio": 0.1469,
+          "yules_k": 97.5417,
+          "simpsons_d": 0.0098,
+          "honores_r": 2377.5703,
+          "brunets_w": 13.3543
+        },
+        "syntactic_means": {
+          "sentence_count": 472.4444,
+          "mean_sentence_length": 21.5813,
+          "std_sentence_length": 18.7607,
+          "median_sentence_length": 17.0556,
+          "iqr_sentence_length": 22.3333,
+          "short_sentence_ratio": 0.3892,
+          "long_sentence_ratio": 0.1936,
+          "comma_rate_per_1k": 95.2993,
+          "semicolon_rate_per_1k": 10.4787,
+          "colon_rate_per_1k": 2.5674,
+          "dash_rate_per_1k": 5.1422,
+          "question_rate_per_1k": 7.1194,
+          "exclamation_rate_per_1k": 7.2398,
+          "paren_rate_per_1k": 2.0616,
+          "quote_rate_per_1k": 44.8283,
+          "mean_syllables_per_word": 1.3459,
+          "complex_word_ratio": 0.0751,
+          "flesch_reading_ease": 71.0696,
+          "flesch_kincaid_grade": 8.7079,
+          "coleman_liau_index": 7.7913,
+          "automated_readability_index": 9.3636,
+          "gunning_fog_index": 11.6374
+        },
+        "marker_rates_per_1k": {
+          "upon": 2.5777,
+          "on": 6.8774,
+          "while": 0.7128,
+          "whilst": 0.0,
+          "very": 3.1276,
+          "quite": 0.647,
+          "rather": 0.6366,
+          "indeed": 0.6256,
+          "perhaps": 0.3403,
+          "never": 1.3051,
+          "always": 0.6799,
+          "already": 0.2305,
+          "towards": 0.3839,
+          "toward": 0.011,
+          "within": 0.3728,
+          "without": 0.7571,
+          "though": 0.6575,
+          "although": 0.2634
+        },
+        "mendenhall_curve_1_to_15": [
+          0.0418,
+          0.176,
+          0.2416,
+          0.1913,
+          0.1063,
+          0.0826,
+          0.0607,
+          0.0417,
+          0.0271,
+          0.0163,
+          0.0081,
+          0.004,
+          0.0018,
+          0.0005,
+          0.0002
+        ]
+      },
+      "Charlotte Bront\u00eb": {
+        "document_count": 9,
+        "total_words": 91502,
+        "lexical_means": {
+          "token_count": 10166.8889,
+          "type_count": 2577.2222,
+          "mean_word_length": 4.3142,
+          "std_word_length": 2.3414,
+          "ttr": 0.2535,
+          "root_ttr_guiraud": 25.5581,
+          "log_ttr_herdan": 0.8511,
+          "mattr": 0.5425,
+          "hapax_ratio": 0.6374,
+          "dislegomena_ratio": 0.152,
+          "yules_k": 85.2346,
+          "simpsons_d": 0.0085,
+          "honores_r": 2549.558,
+          "brunets_w": 12.5008
+        },
+        "syntactic_means": {
+          "sentence_count": 397.4444,
+          "mean_sentence_length": 26.3428,
+          "std_sentence_length": 21.0237,
+          "median_sentence_length": 21.7222,
+          "iqr_sentence_length": 23.5833,
+          "short_sentence_ratio": 0.3,
+          "long_sentence_ratio": 0.2673,
+          "comma_rate_per_1k": 83.7117,
+          "semicolon_rate_per_1k": 18.0445,
+          "colon_rate_per_1k": 7.7696,
+          "dash_rate_per_1k": 8.0456,
+          "question_rate_per_1k": 6.6016,
+          "exclamation_rate_per_1k": 3.7945,
+          "paren_rate_per_1k": 2.4875,
+          "quote_rate_per_1k": 32.8784,
+          "mean_syllables_per_word": 1.3664,
+          "complex_word_ratio": 0.08,
+          "flesch_reading_ease": 64.5035,
+          "flesch_kincaid_grade": 10.8067,
+          "coleman_liau_index": 8.411,
+          "automated_readability_index": 12.0613,
+          "gunning_fog_index": 13.7373
+        },
+        "marker_rates_per_1k": {
+          "upon": 0.3605,
+          "on": 6.0321,
+          "while": 0.7655,
+          "whilst": 0.0109,
+          "very": 1.9884,
+          "quite": 0.7641,
+          "rather": 0.8193,
+          "indeed": 0.677,
+          "perhaps": 0.7315,
+          "never": 1.3225,
+          "always": 0.5573,
+          "already": 0.2629,
+          "towards": 0.1528,
+          "toward": 0.0,
+          "within": 0.3065,
+          "without": 0.8192,
+          "though": 0.83,
+          "although": 0.0
+        },
+        "mendenhall_curve_1_to_15": [
+          0.0529,
+          0.1721,
+          0.2287,
+          0.176,
+          0.1099,
+          0.085,
+          0.0645,
+          0.0455,
+          0.0312,
+          0.0169,
+          0.0087,
+          0.0054,
+          0.0021,
+          0.0008,
+          0.0003
+        ]
+      },
+      "H. G. Wells": {
+        "document_count": 9,
+        "total_words": 91001,
+        "lexical_means": {
+          "token_count": 10111.2222,
+          "type_count": 2231.4444,
+          "mean_word_length": 4.3518,
+          "std_word_length": 2.3104,
+          "ttr": 0.2207,
+          "root_ttr_guiraud": 22.1916,
+          "log_ttr_herdan": 0.8361,
+          "mattr": 0.5129,
+          "hapax_ratio": 0.5953,
+          "dislegomena_ratio": 0.1562,
+          "yules_k": 124.5453,
+          "simpsons_d": 0.0125,
+          "honores_r": 2280.0895,
+          "brunets_w": 13.2539
+        },
+        "syntactic_means": {
+          "sentence_count": 613.6667,
+          "mean_sentence_length": 17.0233,
+          "std_sentence_length": 11.4997,
+          "median_sentence_length": 14.7222,
+          "iqr_sentence_length": 14.3333,
+          "short_sentence_ratio": 0.425,
+          "long_sentence_ratio": 0.0848,
+          "comma_rate_per_1k": 71.1012,
+          "semicolon_rate_per_1k": 3.1653,
+          "colon_rate_per_1k": 0.6268,
+          "dash_rate_per_1k": 6.5516,
+          "question_rate_per_1k": 4.0152,
+          "exclamation_rate_per_1k": 5.2097,
+          "paren_rate_per_1k": 0.5275,
+          "quote_rate_per_1k": 29.8054,
+          "mean_syllables_per_word": 1.3717,
+          "complex_word_ratio": 0.0776,
+          "flesch_reading_ease": 73.5147,
+          "flesch_kincaid_grade": 7.2346,
+          "coleman_liau_index": 7.9931,
+          "automated_readability_index": 7.5788,
+          "gunning_fog_index": 9.9127
+        },
+        "marker_rates_per_1k": {
+          "upon": 2.3104,
+          "on": 5.4283,
+          "while": 0.6701,
+          "whilst": 0.0,
+          "very": 2.187,
+          "quite": 0.7354,
+          "rather": 0.2748,
+          "indeed": 0.4944,
+          "perhaps": 0.7257,
+          "never": 0.4725,
+          "always": 0.1977,
+          "already": 0.4509,
+          "towards": 1.694,
+          "toward": 0.0219,
+          "within": 0.341,
+          "without": 0.4615,
+          "though": 0.4727,
+          "although": 0.044
+        },
+        "mendenhall_curve_1_to_15": [
+          0.0506,
+          0.1593,
+          0.2329,
+          0.1794,
+          0.113,
+          0.0834,
+          0.0727,
+          0.046,
+          0.0299,
+          0.0179,
+          0.0073,
+          0.005,
+          0.0018,
+          0.0007,
+          0.0002
+        ]
+      },
+      "Jane Austen": {
+        "document_count": 9,
+        "total_words": 90746,
+        "lexical_means": {
+          "token_count": 10082.8889,
+          "type_count": 1855.4444,
+          "mean_word_length": 4.3467,
+          "std_word_length": 2.3935,
+          "ttr": 0.184,
+          "root_ttr_guiraud": 18.479,
+          "log_ttr_herdan": 0.8163,
+          "mattr": 0.495,
+          "hapax_ratio": 0.5433,
+          "dislegomena_ratio": 0.165,
+          "yules_k": 81.5157,
+          "simpsons_d": 0.0082,
+          "honores_r": 2019.7381,
+          "brunets_w": 14.3495
+        },
+        "syntactic_means": {
+          "sentence_count": 448.2222,
+          "mean_sentence_length": 22.691,
+          "std_sentence_length": 19.6669,
+          "median_sentence_length": 17.3333,
+          "iqr_sentence_length": 21.8611,
+          "short_sentence_ratio": 0.3755,
+          "long_sentence_ratio": 0.2101,
+          "comma_rate_per_1k": 75.4299,
+          "semicolon_rate_per_1k": 13.5424,
+          "colon_rate_per_1k": 1.15,
+          "dash_rate_per_1k": 6.7307,
+          "question_rate_per_1k": 3.9349,
+          "exclamation_rate_per_1k": 4.3766,
+          "paren_rate_per_1k": 0.7033,
+          "quote_rate_per_1k": 35.0087,
+          "mean_syllables_per_word": 1.4145,
+          "complex_word_ratio": 0.0963,
+          "flesch_reading_ease": 64.1343,
+          "flesch_kincaid_grade": 9.951,
+          "coleman_liau_index": 8.4432,
+          "automated_readability_index": 10.3886,
+          "gunning_fog_index": 12.9267
+        },
+        "marker_rates_per_1k": {
+          "upon": 0.6382,
+          "on": 4.5859,
+          "while": 0.6934,
+          "whilst": 0.0,
+          "very": 6.1811,
+          "quite": 0.9358,
+          "rather": 0.7593,
+          "indeed": 1.1346,
+          "perhaps": 0.7061,
+          "never": 1.9601,
+          "always": 1.1789,
+          "already": 0.2426,
+          "towards": 0.4412,
+          "toward": 0.0,
+          "within": 0.2648,
+          "without": 1.1903,
+          "though": 1.3791,
+          "although": 0.0552
+        },
+        "mendenhall_curve_1_to_15": [
+          0.0376,
+          0.1924,
+          0.2314,
+          0.1789,
+          0.099,
+          0.0749,
+          0.0676,
+          0.043,
+          0.0352,
+          0.0194,
+          0.0105,
+          0.0064,
+          0.0027,
+          0.0007,
+          0.0003
+        ]
+      }
+    },
+    "cross_validation_45_segments": {
+      "burrows_delta": {
+        "accuracy": 1.0,
+        "macro_f1": 1.0,
+        "correct": 45,
+        "total": 45
+      },
+      "cosine_delta": {
+        "accuracy": 0.9778,
+        "macro_f1": 0.9777,
+        "correct": 44,
+        "total": 45
+      },
+      "quadratic_delta": {
+        "accuracy": 1.0,
+        "macro_f1": 1.0,
+        "correct": 45,
+        "total": 45
+      },
+      "eder_delta": {
+        "accuracy": 1.0,
+        "macro_f1": 1.0,
+        "correct": 45,
+        "total": 45
+      },
+      "kilgarriff_chi2": {
+        "accuracy": 0.9778,
+        "macro_f1": 0.9777,
+        "correct": 44,
+        "total": 45
+      },
+      "mendenhall_curve": {
+        "accuracy": 0.7333,
+        "macro_f1": 0.7335,
+        "correct": 33,
+        "total": 45
+      },
+      "mosteller_wallace": {
+        "accuracy": 0.9333,
+        "macro_f1": 0.9332,
+        "correct": 42,
+        "total": 45
+      },
+      "char_ngrams": {
+        "accuracy": 1.0,
+        "macro_f1": 1.0,
+        "correct": 45,
+        "total": 45
+      },
+      "general_imposters": {
+        "accuracy": 1.0,
+        "macro_f1": 1.0,
+        "correct": 45,
+        "total": 45
+      },
+      "composite_ml": {
+        "accuracy": 1.0,
+        "macro_f1": 1.0,
+        "correct": 45,
+        "total": 45
+      },
+      "ensemble_consensus": {
+        "accuracy": 1.0,
+        "macro_f1": 1.0,
+        "correct": 45,
+        "total": 45
+      }
+    },
+    "heldout_novels_attribution": [
+      {
+        "doc_id": "austen_sense",
+        "title": "Sense and Sensibility",
+        "true_author": "Jane Austen",
+        "word_count": 112978,
+        "consensus_author": "Jane Austen",
+        "correct": true,
+        "consensus_agreement": 1.0,
+        "predictions": {
+          "burrows_delta": "Jane Austen",
+          "cosine_delta": "Jane Austen",
+          "quadratic_delta": "Jane Austen",
+          "eder_delta": "Jane Austen",
+          "kilgarriff_chi2": "Jane Austen",
+          "mendenhall_curve": "Jane Austen",
+          "mosteller_wallace": "Jane Austen",
+          "char_ngrams": "Jane Austen",
+          "general_imposters": "Jane Austen",
+          "composite_ml": "Jane Austen"
+        },
+        "burrows_delta": {
+          "Arthur Conan Doyle": 0.9423,
+          "Charles Dickens": 1.0231,
+          "Charlotte Bront\u00eb": 0.8361,
+          "H. G. Wells": 1.341,
+          "Jane Austen": 0.4993
+        },
+        "cosine_delta": {
+          "Arthur Conan Doyle": 1.0718,
+          "Charles Dickens": 1.3495,
+          "Charlotte Bront\u00eb": 0.9587,
+          "H. G. Wells": 1.4873,
+          "Jane Austen": 0.2516
+        },
+        "kilgarriff_chi2": {
+          "Jane Austen": 6847.26,
+          "Charlotte Bront\u00eb": 8297.67,
+          "Charles Dickens": 13707.43,
+          "Arthur Conan Doyle": 12553.23,
+          "H. G. Wells": 19879.24
+        },
+        "general_imposters_scores": {
+          "Arthur Conan Doyle": 0.0,
+          "Charles Dickens": 0.0,
+          "Charlotte Bront\u00eb": 0.0,
+          "H. G. Wells": 0.0,
+          "Jane Austen": 1.0
+        }
+      },
+      {
+        "doc_id": "bronte_villette",
+        "title": "Villette",
+        "true_author": "Charlotte Bront\u00eb",
+        "word_count": 185188,
+        "consensus_author": "Charlotte Bront\u00eb",
+        "correct": true,
+        "consensus_agreement": 1.0,
+        "predictions": {
+          "burrows_delta": "Charlotte Bront\u00eb",
+          "cosine_delta": "Charlotte Bront\u00eb",
+          "quadratic_delta": "Charlotte Bront\u00eb",
+          "eder_delta": "Charlotte Bront\u00eb",
+          "kilgarriff_chi2": "Charlotte Bront\u00eb",
+          "mendenhall_curve": "Charlotte Bront\u00eb",
+          "mosteller_wallace": "Charlotte Bront\u00eb",
+          "char_ngrams": "Charlotte Bront\u00eb",
+          "general_imposters": "Charlotte Bront\u00eb",
+          "composite_ml": "Charlotte Bront\u00eb"
+        },
+        "burrows_delta": {
+          "Arthur Conan Doyle": 0.7293,
+          "Charles Dickens": 0.6848,
+          "Charlotte Bront\u00eb": 0.3759,
+          "H. G. Wells": 0.8655,
+          "Jane Austen": 0.8536
+        },
+        "cosine_delta": {
+          "Arthur Conan Doyle": 1.2377,
+          "Charles Dickens": 1.1669,
+          "Charlotte Bront\u00eb": 0.4579,
+          "H. G. Wells": 1.0054,
+          "Jane Austen": 1.0035
+        },
+        "kilgarriff_chi2": {
+          "Jane Austen": 13687.31,
+          "Charlotte Bront\u00eb": 4479.84,
+          "Charles Dickens": 11431.07,
+          "Arthur Conan Doyle": 11114.21,
+          "H. G. Wells": 13072.04
+        },
+        "general_imposters_scores": {
+          "Arthur Conan Doyle": 0.0,
+          "Charles Dickens": 0.0,
+          "Charlotte Bront\u00eb": 1.0,
+          "H. G. Wells": 0.06,
+          "Jane Austen": 0.0
+        }
+      },
+      {
+        "doc_id": "dickens_two_cities",
+        "title": "A Tale of Two Cities",
+        "true_author": "Charles Dickens",
+        "word_count": 129219,
+        "consensus_author": "Charles Dickens",
+        "correct": true,
+        "consensus_agreement": 1.0,
+        "predictions": {
+          "burrows_delta": "Charles Dickens",
+          "cosine_delta": "Charles Dickens",
+          "quadratic_delta": "Charles Dickens",
+          "eder_delta": "Charles Dickens",
+          "kilgarriff_chi2": "Charles Dickens",
+          "mendenhall_curve": "Charles Dickens",
+          "mosteller_wallace": "Charles Dickens",
+          "char_ngrams": "Charles Dickens",
+          "general_imposters": "Charles Dickens",
+          "composite_ml": "Charles Dickens"
+        },
+        "burrows_delta": {
+          "Arthur Conan Doyle": 0.6892,
+          "Charles Dickens": 0.4843,
+          "Charlotte Bront\u00eb": 0.5805,
+          "H. G. Wells": 0.8407,
+          "Jane Austen": 0.9266
+        },
+        "cosine_delta": {
+          "Arthur Conan Doyle": 1.0951,
+          "Charles Dickens": 0.603,
+          "Charlotte Bront\u00eb": 1.0267,
+          "H. G. Wells": 0.9457,
+          "Jane Austen": 1.2288
+        },
+        "kilgarriff_chi2": {
+          "Jane Austen": 13261.27,
+          "Charlotte Bront\u00eb": 7399.39,
+          "Charles Dickens": 7331.9,
+          "Arthur Conan Doyle": 8207.08,
+          "H. G. Wells": 12069.18
+        },
+        "general_imposters_scores": {
+          "Arthur Conan Doyle": 0.0,
+          "Charles Dickens": 0.96,
+          "Charlotte Bront\u00eb": 0.02,
+          "H. G. Wells": 0.06,
+          "Jane Austen": 0.0
+        }
+      },
+      {
+        "doc_id": "doyle_lost_world",
+        "title": "The Lost World",
+        "true_author": "Arthur Conan Doyle",
+        "word_count": 72139,
+        "consensus_author": "Arthur Conan Doyle",
+        "correct": true,
+        "consensus_agreement": 1.0,
+        "predictions": {
+          "burrows_delta": "Arthur Conan Doyle",
+          "cosine_delta": "Arthur Conan Doyle",
+          "quadratic_delta": "Arthur Conan Doyle",
+          "eder_delta": "Arthur Conan Doyle",
+          "kilgarriff_chi2": "Arthur Conan Doyle",
+          "mendenhall_curve": "Charles Dickens",
+          "mosteller_wallace": "Arthur Conan Doyle",
+          "char_ngrams": "Arthur Conan Doyle",
+          "general_imposters": "Arthur Conan Doyle",
+          "composite_ml": "Arthur Conan Doyle"
+        },
+        "burrows_delta": {
+          "Arthur Conan Doyle": 0.6864,
+          "Charles Dickens": 0.7955,
+          "Charlotte Bront\u00eb": 0.7585,
+          "H. G. Wells": 0.8519,
+          "Jane Austen": 1.1202
+        },
+        "cosine_delta": {
+          "Arthur Conan Doyle": 0.6617,
+          "Charles Dickens": 1.0822,
+          "Charlotte Bront\u00eb": 1.1701,
+          "H. G. Wells": 0.8493,
+          "Jane Austen": 1.2518
+        },
+        "kilgarriff_chi2": {
+          "Jane Austen": 14304.83,
+          "Charlotte Bront\u00eb": 8898.95,
+          "Charles Dickens": 9449.7,
+          "Arthur Conan Doyle": 6364.74,
+          "H. G. Wells": 8026.07
+        },
+        "general_imposters_scores": {
+          "Arthur Conan Doyle": 0.9,
+          "Charles Dickens": 0.0,
+          "Charlotte Bront\u00eb": 0.02,
+          "H. G. Wells": 0.23,
+          "Jane Austen": 0.0
+        }
+      },
+      {
+        "doc_id": "wells_invisible_man",
+        "title": "The Invisible Man",
+        "true_author": "H. G. Wells",
+        "word_count": 46188,
+        "consensus_author": "H. G. Wells",
+        "correct": true,
+        "consensus_agreement": 0.5556,
+        "predictions": {
+          "burrows_delta": "H. G. Wells",
+          "cosine_delta": "H. G. Wells",
+          "quadratic_delta": "Charles Dickens",
+          "eder_delta": "Charles Dickens",
+          "kilgarriff_chi2": "Charles Dickens",
+          "mendenhall_curve": "Charles Dickens",
+          "mosteller_wallace": "Arthur Conan Doyle",
+          "char_ngrams": "H. G. Wells",
+          "general_imposters": "H. G. Wells",
+          "composite_ml": "H. G. Wells"
+        },
+        "burrows_delta": {
+          "Arthur Conan Doyle": 0.982,
+          "Charles Dickens": 0.7697,
+          "Charlotte Bront\u00eb": 0.8901,
+          "H. G. Wells": 0.731,
+          "Jane Austen": 1.32
+        },
+        "cosine_delta": {
+          "Arthur Conan Doyle": 1.1057,
+          "Charles Dickens": 0.6997,
+          "Charlotte Bront\u00eb": 1.1349,
+          "H. G. Wells": 0.5581,
+          "Jane Austen": 1.4941
+        },
+        "kilgarriff_chi2": {
+          "Jane Austen": 13788.55,
+          "Charlotte Bront\u00eb": 8800.05,
+          "Charles Dickens": 6690.29,
+          "Arthur Conan Doyle": 8089.24,
+          "H. G. Wells": 7591.41
+        },
+        "general_imposters_scores": {
+          "Arthur Conan Doyle": 0.01,
+          "Charles Dickens": 0.05,
+          "Charlotte Bront\u00eb": 0.0,
+          "H. G. Wells": 1.0,
+          "Jane Austen": 0.0
+        }
+      }
+    ],
+    "heldout_segments_attribution": [
+      {
+        "doc_id": "austen_sense_part1",
+        "title": "Sense and Sensibility (Part 1)",
+        "novel": "Sense and Sensibility",
+        "true_author": "Jane Austen",
+        "consensus_author": "Jane Austen",
+        "correct": true,
+        "consensus_agreement": 1.0,
+        "predictions": {
+          "burrows_delta": "Jane Austen",
+          "cosine_delta": "Jane Austen",
+          "quadratic_delta": "Jane Austen",
+          "eder_delta": "Jane Austen",
+          "kilgarriff_chi2": "Jane Austen",
+          "mendenhall_curve": "Jane Austen",
+          "mosteller_wallace": "Jane Austen",
+          "char_ngrams": "Jane Austen",
+          "general_imposters": "Jane Austen",
+          "composite_ml": "Jane Austen"
+        },
+        "burrows_delta": {
+          "Arthur Conan Doyle": 1.224,
+          "Charles Dickens": 1.1729,
+          "Charlotte Bront\u00eb": 1.0147,
+          "H. G. Wells": 1.3991,
+          "Jane Austen": 0.8988
+        },
+        "cosine_delta": {
+          "Arthur Conan Doyle": 1.1589,
+          "Charles Dickens": 1.2127,
+          "Charlotte Bront\u00eb": 0.9018,
+          "H. G. Wells": 1.2213,
+          "Jane Austen": 0.5769
+        },
+        "general_imposters_scores": {
+          "Arthur Conan Doyle": 0.0,
+          "Charles Dickens": 0.0,
+          "Charlotte Bront\u00eb": 0.02,
+          "H. G. Wells": 0.0,
+          "Jane Austen": 1.0
+        }
+      },
+      {
+        "doc_id": "austen_sense_part2",
+        "title": "Sense and Sensibility (Part 2)",
+        "novel": "Sense and Sensibility",
+        "true_author": "Jane Austen",
+        "consensus_author": "Jane Austen",
+        "correct": true,
+        "consensus_agreement": 1.0,
+        "predictions": {
+          "burrows_delta": "Jane Austen",
+          "cosine_delta": "Jane Austen",
+          "quadratic_delta": "Jane Austen",
+          "eder_delta": "Jane Austen",
+          "kilgarriff_chi2": "Jane Austen",
+          "mendenhall_curve": "Jane Austen",
+          "mosteller_wallace": "Jane Austen",
+          "char_ngrams": "Jane Austen",
+          "general_imposters": "Jane Austen",
+          "composite_ml": "Jane Austen"
+        },
+        "burrows_delta": {
+          "Arthur Conan Doyle": 0.9138,
+          "Charles Dickens": 1.0541,
+          "Charlotte Bront\u00eb": 0.8624,
+          "H. G. Wells": 1.4173,
+          "Jane Austen": 0.6259
+        },
+        "cosine_delta": {
+          "Arthur Conan Doyle": 0.9568,
+          "Charles Dickens": 1.3033,
+          "Charlotte Bront\u00eb": 0.952,
+          "H. G. Wells": 1.4832,
+          "Jane Austen": 0.3715
+        },
+        "general_imposters_scores": {
+          "Arthur Conan Doyle": 0.0,
+          "Charles Dickens": 0.0,
+          "Charlotte Bront\u00eb": 0.0,
+          "H. G. Wells": 0.0,
+          "Jane Austen": 1.0
+        }
+      },
+      {
+        "doc_id": "austen_sense_part3",
+        "title": "Sense and Sensibility (Part 3)",
+        "novel": "Sense and Sensibility",
+        "true_author": "Jane Austen",
+        "consensus_author": "Jane Austen",
+        "correct": true,
+        "consensus_agreement": 1.0,
+        "predictions": {
+          "burrows_delta": "Jane Austen",
+          "cosine_delta": "Jane Austen",
+          "quadratic_delta": "Jane Austen",
+          "eder_delta": "Jane Austen",
+          "kilgarriff_chi2": "Jane Austen",
+          "mendenhall_curve": "Jane Austen",
+          "mosteller_wallace": "Jane Austen",
+          "char_ngrams": "Jane Austen",
+          "general_imposters": "Jane Austen",
+          "composite_ml": "Jane Austen"
+        },
+        "burrows_delta": {
+          "Arthur Conan Doyle": 1.0234,
+          "Charles Dickens": 1.1534,
+          "Charlotte Bront\u00eb": 0.9581,
+          "H. G. Wells": 1.4527,
+          "Jane Austen": 0.7039
+        },
+        "cosine_delta": {
+          "Arthur Conan Doyle": 1.0445,
+          "Charles Dickens": 1.2743,
+          "Charlotte Bront\u00eb": 0.9083,
+          "H. G. Wells": 1.4215,
+          "Jane Austen": 0.4129
+        },
+        "general_imposters_scores": {
+          "Arthur Conan Doyle": 0.0,
+          "Charles Dickens": 0.0,
+          "Charlotte Bront\u00eb": 0.0,
+          "H. G. Wells": 0.0,
+          "Jane Austen": 1.0
+        }
+      },
+      {
+        "doc_id": "bronte_villette_part1",
+        "title": "Villette (Part 1)",
+        "novel": "Villette",
+        "true_author": "Charlotte Bront\u00eb",
+        "consensus_author": "Charlotte Bront\u00eb",
+        "correct": true,
+        "consensus_agreement": 1.0,
+        "predictions": {
+          "burrows_delta": "Charlotte Bront\u00eb",
+          "cosine_delta": "Charlotte Bront\u00eb",
+          "quadratic_delta": "Charlotte Bront\u00eb",
+          "eder_delta": "Charlotte Bront\u00eb",
+          "kilgarriff_chi2": "Charlotte Bront\u00eb",
+          "mendenhall_curve": "Charles Dickens",
+          "mosteller_wallace": "Charlotte Bront\u00eb",
+          "char_ngrams": "Charlotte Bront\u00eb",
+          "general_imposters": "Charlotte Bront\u00eb",
+          "composite_ml": "Charlotte Bront\u00eb"
+        },
+        "burrows_delta": {
+          "Arthur Conan Doyle": 0.9202,
+          "Charles Dickens": 0.9086,
+          "Charlotte Bront\u00eb": 0.5867,
+          "H. G. Wells": 1.1002,
+          "Jane Austen": 0.9464
+        },
+        "cosine_delta": {
+          "Arthur Conan Doyle": 1.1883,
+          "Charles Dickens": 1.1675,
+          "Charlotte Bront\u00eb": 0.5003,
+          "H. G. Wells": 1.1355,
+          "Jane Austen": 0.8844
+        },
+        "general_imposters_scores": {
+          "Arthur Conan Doyle": 0.0,
+          "Charles Dickens": 0.01,
+          "Charlotte Bront\u00eb": 1.0,
+          "H. G. Wells": 0.0,
+          "Jane Austen": 0.01
+        }
+      },
+      {
+        "doc_id": "bronte_villette_part2",
+        "title": "Villette (Part 2)",
+        "novel": "Villette",
+        "true_author": "Charlotte Bront\u00eb",
+        "consensus_author": "Charlotte Bront\u00eb",
+        "correct": true,
+        "consensus_agreement": 1.0,
+        "predictions": {
+          "burrows_delta": "Charlotte Bront\u00eb",
+          "cosine_delta": "Charlotte Bront\u00eb",
+          "quadratic_delta": "Charlotte Bront\u00eb",
+          "eder_delta": "Charlotte Bront\u00eb",
+          "kilgarriff_chi2": "Charlotte Bront\u00eb",
+          "mendenhall_curve": "Charlotte Bront\u00eb",
+          "mosteller_wallace": "Charlotte Bront\u00eb",
+          "char_ngrams": "Charlotte Bront\u00eb",
+          "general_imposters": "Charlotte Bront\u00eb",
+          "composite_ml": "Charlotte Bront\u00eb"
+        },
+        "burrows_delta": {
+          "Arthur Conan Doyle": 0.941,
+          "Charles Dickens": 0.8512,
+          "Charlotte Bront\u00eb": 0.6044,
+          "H. G. Wells": 0.918,
+          "Jane Austen": 1.0614
+        },
+        "cosine_delta": {
+          "Arthur Conan Doyle": 1.1748,
+          "Charles Dickens": 1.0905,
+          "Charlotte Bront\u00eb": 0.5889,
+          "H. G. Wells": 0.8915,
+          "Jane Austen": 1.1438
+        },
+        "general_imposters_scores": {
+          "Arthur Conan Doyle": 0.0,
+          "Charles Dickens": 0.01,
+          "Charlotte Bront\u00eb": 0.92,
+          "H. G. Wells": 0.19,
+          "Jane Austen": 0.01
+        }
+      },
+      {
+        "doc_id": "bronte_villette_part3",
+        "title": "Villette (Part 3)",
+        "novel": "Villette",
+        "true_author": "Charlotte Bront\u00eb",
+        "consensus_author": "Charlotte Bront\u00eb",
+        "correct": true,
+        "consensus_agreement": 1.0,
+        "predictions": {
+          "burrows_delta": "Charlotte Bront\u00eb",
+          "cosine_delta": "Charlotte Bront\u00eb",
+          "quadratic_delta": "Charlotte Bront\u00eb",
+          "eder_delta": "Charlotte Bront\u00eb",
+          "kilgarriff_chi2": "Charlotte Bront\u00eb",
+          "mendenhall_curve": "H. G. Wells",
+          "mosteller_wallace": "Charlotte Bront\u00eb",
+          "char_ngrams": "Charlotte Bront\u00eb",
+          "general_imposters": "Charlotte Bront\u00eb",
+          "composite_ml": "Charlotte Bront\u00eb"
+        },
+        "burrows_delta": {
+          "Arthur Conan Doyle": 0.9771,
+          "Charles Dickens": 0.8559,
+          "Charlotte Bront\u00eb": 0.6395,
+          "H. G. Wells": 0.9687,
+          "Jane Austen": 0.962
+        },
+        "cosine_delta": {
+          "Arthur Conan Doyle": 1.3539,
+          "Charles Dickens": 1.1008,
+          "Charlotte Bront\u00eb": 0.6109,
+          "H. G. Wells": 0.9825,
+          "Jane Austen": 0.9052
+        },
+        "general_imposters_scores": {
+          "Arthur Conan Doyle": 0.0,
+          "Charles Dickens": 0.0,
+          "Charlotte Bront\u00eb": 0.97,
+          "H. G. Wells": 0.04,
+          "Jane Austen": 0.06
+        }
+      },
+      {
+        "doc_id": "dickens_two_cities_part1",
+        "title": "A Tale of Two Cities (Part 1)",
+        "novel": "A Tale of Two Cities",
+        "true_author": "Charles Dickens",
+        "consensus_author": "Charles Dickens",
+        "correct": true,
+        "consensus_agreement": 1.0,
+        "predictions": {
+          "burrows_delta": "Charles Dickens",
+          "cosine_delta": "Charles Dickens",
+          "quadratic_delta": "Charles Dickens",
+          "eder_delta": "Charles Dickens",
+          "kilgarriff_chi2": "Charles Dickens",
+          "mendenhall_curve": "Charles Dickens",
+          "mosteller_wallace": "Charles Dickens",
+          "char_ngrams": "Charles Dickens",
+          "general_imposters": "Charles Dickens",
+          "composite_ml": "Charles Dickens"
+        },
+        "burrows_delta": {
+          "Arthur Conan Doyle": 0.8988,
+          "Charles Dickens": 0.6843,
+          "Charlotte Bront\u00eb": 0.7113,
+          "H. G. Wells": 0.839,
+          "Jane Austen": 1.0976
+        },
+        "cosine_delta": {
+          "Arthur Conan Doyle": 1.165,
+          "Charles Dickens": 0.7261,
+          "Charlotte Bront\u00eb": 0.9504,
+          "H. G. Wells": 0.7917,
+          "Jane Austen": 1.2957
+        },
+        "general_imposters_scores": {
+          "Arthur Conan Doyle": 0.0,
+          "Charles Dickens": 0.9,
+          "Charlotte Bront\u00eb": 0.03,
+          "H. G. Wells": 0.23,
+          "Jane Austen": 0.0
+        }
+      },
+      {
+        "doc_id": "dickens_two_cities_part2",
+        "title": "A Tale of Two Cities (Part 2)",
+        "novel": "A Tale of Two Cities",
+        "true_author": "Charles Dickens",
+        "consensus_author": "Charles Dickens",
+        "correct": true,
+        "consensus_agreement": 0.8889,
+        "predictions": {
+          "burrows_delta": "Charles Dickens",
+          "cosine_delta": "Charles Dickens",
+          "quadratic_delta": "Charles Dickens",
+          "eder_delta": "Charles Dickens",
+          "kilgarriff_chi2": "Charles Dickens",
+          "mendenhall_curve": "Charles Dickens",
+          "mosteller_wallace": "Charlotte Bront\u00eb",
+          "char_ngrams": "Charles Dickens",
+          "general_imposters": "Charles Dickens",
+          "composite_ml": "Charles Dickens"
+        },
+        "burrows_delta": {
+          "Arthur Conan Doyle": 0.905,
+          "Charles Dickens": 0.6931,
+          "Charlotte Bront\u00eb": 0.8476,
+          "H. G. Wells": 0.9549,
+          "Jane Austen": 1.1796
+        },
+        "cosine_delta": {
+          "Arthur Conan Doyle": 1.0369,
+          "Charles Dickens": 0.5944,
+          "Charlotte Bront\u00eb": 1.0929,
+          "H. G. Wells": 0.9009,
+          "Jane Austen": 1.2864
+        },
+        "general_imposters_scores": {
+          "Arthur Conan Doyle": 0.0,
+          "Charles Dickens": 0.97,
+          "Charlotte Bront\u00eb": 0.0,
+          "H. G. Wells": 0.1,
+          "Jane Austen": 0.0
+        }
+      },
+      {
+        "doc_id": "dickens_two_cities_part3",
+        "title": "A Tale of Two Cities (Part 3)",
+        "novel": "A Tale of Two Cities",
+        "true_author": "Charles Dickens",
+        "consensus_author": "Charles Dickens",
+        "correct": true,
+        "consensus_agreement": 1.0,
+        "predictions": {
+          "burrows_delta": "Charles Dickens",
+          "cosine_delta": "Charles Dickens",
+          "quadratic_delta": "Charles Dickens",
+          "eder_delta": "Charles Dickens",
+          "kilgarriff_chi2": "Charles Dickens",
+          "mendenhall_curve": "Charles Dickens",
+          "mosteller_wallace": "Charles Dickens",
+          "char_ngrams": "Charles Dickens",
+          "general_imposters": "Charles Dickens",
+          "composite_ml": "Charles Dickens"
+        },
+        "burrows_delta": {
+          "Arthur Conan Doyle": 0.8382,
+          "Charles Dickens": 0.6226,
+          "Charlotte Bront\u00eb": 0.7379,
+          "H. G. Wells": 0.9997,
+          "Jane Austen": 0.9723
+        },
+        "cosine_delta": {
+          "Arthur Conan Doyle": 1.1121,
+          "Charles Dickens": 0.6654,
+          "Charlotte Bront\u00eb": 1.0101,
+          "H. G. Wells": 1.0892,
+          "Jane Austen": 1.0398
+        },
+        "general_imposters_scores": {
+          "Arthur Conan Doyle": 0.0,
+          "Charles Dickens": 1.0,
+          "Charlotte Bront\u00eb": 0.01,
+          "H. G. Wells": 0.0,
+          "Jane Austen": 0.01
+        }
+      },
+      {
+        "doc_id": "doyle_lost_world_part1",
+        "title": "The Lost World (Part 1)",
+        "novel": "The Lost World",
+        "true_author": "Arthur Conan Doyle",
+        "consensus_author": "Arthur Conan Doyle",
+        "correct": true,
+        "consensus_agreement": 1.0,
+        "predictions": {
+          "burrows_delta": "Arthur Conan Doyle",
+          "cosine_delta": "Arthur Conan Doyle",
+          "quadratic_delta": "Arthur Conan Doyle",
+          "eder_delta": "Arthur Conan Doyle",
+          "kilgarriff_chi2": "Arthur Conan Doyle",
+          "mendenhall_curve": "Arthur Conan Doyle",
+          "mosteller_wallace": "Arthur Conan Doyle",
+          "char_ngrams": "Arthur Conan Doyle",
+          "general_imposters": "Arthur Conan Doyle",
+          "composite_ml": "Arthur Conan Doyle"
+        },
+        "burrows_delta": {
+          "Arthur Conan Doyle": 0.7149,
+          "Charles Dickens": 0.9384,
+          "Charlotte Bront\u00eb": 0.9088,
+          "H. G. Wells": 1.1813,
+          "Jane Austen": 1.1083
+        },
+        "cosine_delta": {
+          "Arthur Conan Doyle": 0.5238,
+          "Charles Dickens": 1.0818,
+          "Charlotte Bront\u00eb": 1.0583,
+          "H. G. Wells": 1.2372,
+          "Jane Austen": 1.0173
+        },
+        "general_imposters_scores": {
+          "Arthur Conan Doyle": 0.99,
+          "Charles Dickens": 0.0,
+          "Charlotte Bront\u00eb": 0.01,
+          "H. G. Wells": 0.0,
+          "Jane Austen": 0.03
+        }
+      },
+      {
+        "doc_id": "doyle_lost_world_part2",
+        "title": "The Lost World (Part 2)",
+        "novel": "The Lost World",
+        "true_author": "Arthur Conan Doyle",
+        "consensus_author": "Arthur Conan Doyle",
+        "correct": true,
+        "consensus_agreement": 1.0,
+        "predictions": {
+          "burrows_delta": "Arthur Conan Doyle",
+          "cosine_delta": "Arthur Conan Doyle",
+          "quadratic_delta": "Arthur Conan Doyle",
+          "eder_delta": "Arthur Conan Doyle",
+          "kilgarriff_chi2": "Arthur Conan Doyle",
+          "mendenhall_curve": "Charlotte Bront\u00eb",
+          "mosteller_wallace": "Arthur Conan Doyle",
+          "char_ngrams": "Arthur Conan Doyle",
+          "general_imposters": "Arthur Conan Doyle",
+          "composite_ml": "Arthur Conan Doyle"
+        },
+        "burrows_delta": {
+          "Arthur Conan Doyle": 0.6577,
+          "Charles Dickens": 0.8259,
+          "Charlotte Bront\u00eb": 0.7648,
+          "H. G. Wells": 0.9642,
+          "Jane Austen": 1.0378
+        },
+        "cosine_delta": {
+          "Arthur Conan Doyle": 0.6709,
+          "Charles Dickens": 1.008,
+          "Charlotte Bront\u00eb": 1.0559,
+          "H. G. Wells": 1.0531,
+          "Jane Austen": 1.1472
+        },
+        "general_imposters_scores": {
+          "Arthur Conan Doyle": 0.95,
+          "Charles Dickens": 0.02,
+          "Charlotte Bront\u00eb": 0.07,
+          "H. G. Wells": 0.08,
+          "Jane Austen": 0.0
+        }
+      },
+      {
+        "doc_id": "doyle_lost_world_part3",
+        "title": "The Lost World (Part 3)",
+        "novel": "The Lost World",
+        "true_author": "Arthur Conan Doyle",
+        "consensus_author": "Arthur Conan Doyle",
+        "correct": true,
+        "consensus_agreement": 1.0,
+        "predictions": {
+          "burrows_delta": "Arthur Conan Doyle",
+          "cosine_delta": "Arthur Conan Doyle",
+          "quadratic_delta": "Arthur Conan Doyle",
+          "eder_delta": "Arthur Conan Doyle",
+          "kilgarriff_chi2": "Arthur Conan Doyle",
+          "mendenhall_curve": "Charlotte Bront\u00eb",
+          "mosteller_wallace": "Arthur Conan Doyle",
+          "char_ngrams": "Arthur Conan Doyle",
+          "general_imposters": "Arthur Conan Doyle",
+          "composite_ml": "Arthur Conan Doyle"
+        },
+        "burrows_delta": {
+          "Arthur Conan Doyle": 0.9506,
+          "Charles Dickens": 1.1201,
+          "Charlotte Bront\u00eb": 1.0338,
+          "H. G. Wells": 1.0843,
+          "Jane Austen": 1.3192
+        },
+        "cosine_delta": {
+          "Arthur Conan Doyle": 0.6632,
+          "Charles Dickens": 1.1509,
+          "Charlotte Bront\u00eb": 1.1254,
+          "H. G. Wells": 0.9033,
+          "Jane Austen": 1.1754
+        },
+        "general_imposters_scores": {
+          "Arthur Conan Doyle": 0.95,
+          "Charles Dickens": 0.0,
+          "Charlotte Bront\u00eb": 0.03,
+          "H. G. Wells": 0.13,
+          "Jane Austen": 0.0
+        }
+      },
+      {
+        "doc_id": "wells_invisible_man_part1",
+        "title": "The Invisible Man (Part 1)",
+        "novel": "The Invisible Man",
+        "true_author": "H. G. Wells",
+        "consensus_author": "Charles Dickens",
+        "correct": false,
+        "consensus_agreement": 0.7778,
+        "predictions": {
+          "burrows_delta": "Charles Dickens",
+          "cosine_delta": "Charles Dickens",
+          "quadratic_delta": "Charles Dickens",
+          "eder_delta": "Charles Dickens",
+          "kilgarriff_chi2": "Charles Dickens",
+          "mendenhall_curve": "Charles Dickens",
+          "mosteller_wallace": "Arthur Conan Doyle",
+          "char_ngrams": "Charles Dickens",
+          "general_imposters": "H. G. Wells",
+          "composite_ml": "Charles Dickens"
+        },
+        "burrows_delta": {
+          "Arthur Conan Doyle": 1.1603,
+          "Charles Dickens": 0.9098,
+          "Charlotte Bront\u00eb": 1.0617,
+          "H. G. Wells": 0.944,
+          "Jane Austen": 1.4288
+        },
+        "cosine_delta": {
+          "Arthur Conan Doyle": 1.1545,
+          "Charles Dickens": 0.6818,
+          "Charlotte Bront\u00eb": 1.0743,
+          "H. G. Wells": 0.7055,
+          "Jane Austen": 1.3534
+        },
+        "general_imposters_scores": {
+          "Arthur Conan Doyle": 0.13,
+          "Charles Dickens": 0.49,
+          "Charlotte Bront\u00eb": 0.05,
+          "H. G. Wells": 0.53,
+          "Jane Austen": 0.0
+        }
+      },
+      {
+        "doc_id": "wells_invisible_man_part2",
+        "title": "The Invisible Man (Part 2)",
+        "novel": "The Invisible Man",
+        "true_author": "H. G. Wells",
+        "consensus_author": "Charles Dickens",
+        "correct": false,
+        "consensus_agreement": 1.0,
+        "predictions": {
+          "burrows_delta": "Charles Dickens",
+          "cosine_delta": "Charles Dickens",
+          "quadratic_delta": "Charles Dickens",
+          "eder_delta": "Charles Dickens",
+          "kilgarriff_chi2": "Charles Dickens",
+          "mendenhall_curve": "H. G. Wells",
+          "mosteller_wallace": "Charles Dickens",
+          "char_ngrams": "Charles Dickens",
+          "general_imposters": "Charles Dickens",
+          "composite_ml": "Charles Dickens"
+        },
+        "burrows_delta": {
+          "Arthur Conan Doyle": 1.0693,
+          "Charles Dickens": 0.8742,
+          "Charlotte Bront\u00eb": 0.9767,
+          "H. G. Wells": 0.9295,
+          "Jane Austen": 1.3856
+        },
+        "cosine_delta": {
+          "Arthur Conan Doyle": 1.0354,
+          "Charles Dickens": 0.6796,
+          "Charlotte Bront\u00eb": 1.1241,
+          "H. G. Wells": 0.7584,
+          "Jane Austen": 1.3603
+        },
+        "general_imposters_scores": {
+          "Arthur Conan Doyle": 0.0,
+          "Charles Dickens": 0.58,
+          "Charlotte Bront\u00eb": 0.0,
+          "H. G. Wells": 0.57,
+          "Jane Austen": 0.0
+        }
+      },
+      {
+        "doc_id": "wells_invisible_man_part3",
+        "title": "The Invisible Man (Part 3)",
+        "novel": "The Invisible Man",
+        "true_author": "H. G. Wells",
+        "consensus_author": "H. G. Wells",
+        "correct": true,
+        "consensus_agreement": 0.5556,
+        "predictions": {
+          "burrows_delta": "H. G. Wells",
+          "cosine_delta": "H. G. Wells",
+          "quadratic_delta": "Charles Dickens",
+          "eder_delta": "Charles Dickens",
+          "kilgarriff_chi2": "Charles Dickens",
+          "mendenhall_curve": "Charles Dickens",
+          "mosteller_wallace": "Charlotte Bront\u00eb",
+          "char_ngrams": "H. G. Wells",
+          "general_imposters": "H. G. Wells",
+          "composite_ml": "H. G. Wells"
+        },
+        "burrows_delta": {
+          "Arthur Conan Doyle": 1.0313,
+          "Charles Dickens": 0.8855,
+          "Charlotte Bront\u00eb": 0.971,
+          "H. G. Wells": 0.8462,
+          "Jane Austen": 1.4202
+        },
+        "cosine_delta": {
+          "Arthur Conan Doyle": 1.0651,
+          "Charles Dickens": 0.7785,
+          "Charlotte Bront\u00eb": 1.083,
+          "H. G. Wells": 0.663,
+          "Jane Austen": 1.3936
+        },
+        "general_imposters_scores": {
+          "Arthur Conan Doyle": 0.08,
+          "Charles Dickens": 0.16,
+          "Charlotte Bront\u00eb": 0.05,
+          "H. G. Wells": 0.83,
+          "Jane Austen": 0.0
+        }
+      }
+    ],
+    "pca_analysis": {
+      "explained_variance_ratio": [
+        0.244,
+        0.0944,
+        0.077
+      ],
+      "pc1_top_loadings": [
+        {
+          "word": "be",
+          "loading": 0.155
+        },
+        {
+          "word": "not",
+          "loading": 0.1493
+        },
+        {
+          "word": "the",
+          "loading": -0.1464
+        },
+        {
+          "word": "to",
+          "loading": 0.1346
+        },
+        {
+          "word": "will",
+          "loading": 0.1338
+        },
+        {
+          "word": "do",
+          "loading": 0.1324
+        },
+        {
+          "word": "through",
+          "loading": -0.1322
+        },
+        {
+          "word": "into",
+          "loading": -0.1319
+        },
+        {
+          "word": "such",
+          "loading": 0.1308
+        },
+        {
+          "word": "should",
+          "loading": 0.1293
+        }
+      ],
+      "pc2_top_loadings": [
+        {
+          "word": "he",
+          "loading": 0.1767
+        },
+        {
+          "word": "his",
+          "loading": 0.1599
+        },
+        {
+          "word": "upon",
+          "loading": 0.1537
+        },
+        {
+          "word": "their",
+          "loading": -0.1501
+        },
+        {
+          "word": "her",
+          "loading": -0.1484
+        },
+        {
+          "word": "sir",
+          "loading": 0.1474
+        },
+        {
+          "word": "come",
+          "loading": 0.1472
+        },
+        {
+          "word": "man",
+          "loading": 0.1449
+        },
+        {
+          "word": "she",
+          "loading": -0.1366
+        },
+        {
+          "word": "its",
+          "loading": -0.1361
+        }
+      ],
+      "points": [
+        {
+          "doc_id": "austen_pride_part1",
+          "label": "Jane Austen",
+          "pc1": 9.3238,
+          "pc2": -0.8989,
+          "pc3": 2.1086
+        },
+        {
+          "doc_id": "austen_pride_part2",
+          "label": "Jane Austen",
+          "pc1": 9.0489,
+          "pc2": -1.8282,
+          "pc3": 0.8627
+        },
+        {
+          "doc_id": "austen_pride_part3",
+          "label": "Jane Austen",
+          "pc1": 7.2505,
+          "pc2": -2.0797,
+          "pc3": 3.8396
+        },
+        {
+          "doc_id": "austen_emma_part1",
+          "label": "Jane Austen",
+          "pc1": 11.2806,
+          "pc2": -3.2452,
+          "pc3": 1.2859
+        },
+        {
+          "doc_id": "austen_emma_part2",
+          "label": "Jane Austen",
+          "pc1": 12.94,
+          "pc2": -0.8623,
+          "pc3": -0.878
+        },
+        {
+          "doc_id": "austen_emma_part3",
+          "label": "Jane Austen",
+          "pc1": 10.1276,
+          "pc2": -2.3773,
+          "pc3": -0.7297
+        },
+        {
+          "doc_id": "austen_sense_part1",
+          "label": "Jane Austen",
+          "pc1": 6.7572,
+          "pc2": -5.0929,
+          "pc3": 2.6421
+        },
+        {
+          "doc_id": "austen_sense_part2",
+          "label": "Jane Austen",
+          "pc1": 8.8271,
+          "pc2": -2.2763,
+          "pc3": -0.0423
+        },
+        {
+          "doc_id": "austen_sense_part3",
+          "label": "Jane Austen",
+          "pc1": 8.9006,
+          "pc2": -2.9796,
+          "pc3": -0.1545
+        },
+        {
+          "doc_id": "bronte_jane_eyre_part1",
+          "label": "Charlotte Bront\u00eb",
+          "pc1": -0.5746,
+          "pc2": -2.5457,
+          "pc3": 0.4495
+        },
+        {
+          "doc_id": "bronte_jane_eyre_part2",
+          "label": "Charlotte Bront\u00eb",
+          "pc1": -1.6966,
+          "pc2": -2.7203,
+          "pc3": -1.4746
+        },
+        {
+          "doc_id": "bronte_jane_eyre_part3",
+          "label": "Charlotte Bront\u00eb",
+          "pc1": -1.5949,
+          "pc2": -3.9885,
+          "pc3": -2.163
+        },
+        {
+          "doc_id": "bronte_shirley_part1",
+          "label": "Charlotte Bront\u00eb",
+          "pc1": 0.5963,
+          "pc2": -0.5672,
+          "pc3": 1.1791
+        },
+        {
+          "doc_id": "bronte_shirley_part2",
+          "label": "Charlotte Bront\u00eb",
+          "pc1": 1.9206,
+          "pc2": -2.5183,
+          "pc3": 0.4993
+        },
+        {
+          "doc_id": "bronte_shirley_part3",
+          "label": "Charlotte Bront\u00eb",
+          "pc1": 3.1756,
+          "pc2": -0.4272,
+          "pc3": 0.3451
+        },
+        {
+          "doc_id": "bronte_villette_part1",
+          "label": "Charlotte Bront\u00eb",
+          "pc1": 1.5999,
+          "pc2": -4.0835,
+          "pc3": -1.2583
+        },
+        {
+          "doc_id": "bronte_villette_part2",
+          "label": "Charlotte Bront\u00eb",
+          "pc1": -1.3788,
+          "pc2": -3.8062,
+          "pc3": -1.4516
+        },
+        {
+          "doc_id": "bronte_villette_part3",
+          "label": "Charlotte Bront\u00eb",
+          "pc1": 0.6738,
+          "pc2": -5.3347,
+          "pc3": 0.4796
+        },
+        {
+          "doc_id": "dickens_great_expectations_part1",
+          "label": "Charles Dickens",
+          "pc1": -3.5647,
+          "pc2": 1.4517,
+          "pc3": 2.8412
+        },
+        {
+          "doc_id": "dickens_great_expectations_part2",
+          "label": "Charles Dickens",
+          "pc1": -1.5749,
+          "pc2": 0.0748,
+          "pc3": 1.7366
+        },
+        {
+          "doc_id": "dickens_great_expectations_part3",
+          "label": "Charles Dickens",
+          "pc1": -2.0464,
+          "pc2": 0.922,
+          "pc3": 2.5756
+        },
+        {
+          "doc_id": "dickens_oliver_twist_part1",
+          "label": "Charles Dickens",
+          "pc1": -1.6627,
+          "pc2": 3.9366,
+          "pc3": 5.891
+        },
+        {
+          "doc_id": "dickens_oliver_twist_part2",
+          "label": "Charles Dickens",
+          "pc1": -2.5904,
+          "pc2": 2.4477,
+          "pc3": 5.3499
+        },
+        {
+          "doc_id": "dickens_oliver_twist_part3",
+          "label": "Charles Dickens",
+          "pc1": -2.4445,
+          "pc2": 5.8437,
+          "pc3": 5.5686
+        },
+        {
+          "doc_id": "dickens_two_cities_part1",
+          "label": "Charles Dickens",
+          "pc1": -3.2293,
+          "pc2": 0.6257,
+          "pc3": 3.011
+        },
+        {
+          "doc_id": "dickens_two_cities_part2",
+          "label": "Charles Dickens",
+          "pc1": -3.0877,
+          "pc2": 2.7549,
+          "pc3": 4.2877
+        },
+        {
+          "doc_id": "dickens_two_cities_part3",
+          "label": "Charles Dickens",
+          "pc1": -0.318,
+          "pc2": 1.2887,
+          "pc3": 3.437
+        },
+        {
+          "doc_id": "doyle_sherlock_part1",
+          "label": "Arthur Conan Doyle",
+          "pc1": 2.3443,
+          "pc2": 3.6316,
+          "pc3": -1.3184
+        },
+        {
+          "doc_id": "doyle_sherlock_part2",
+          "label": "Arthur Conan Doyle",
+          "pc1": 1.1922,
+          "pc2": 4.5465,
+          "pc3": -3.0034
+        },
+        {
+          "doc_id": "doyle_sherlock_part3",
+          "label": "Arthur Conan Doyle",
+          "pc1": 1.3354,
+          "pc2": 5.8135,
+          "pc3": -3.2306
+        },
+        {
+          "doc_id": "doyle_baskervilles_part1",
+          "label": "Arthur Conan Doyle",
+          "pc1": 2.6749,
+          "pc2": 5.6346,
+          "pc3": -5.6873
+        },
+        {
+          "doc_id": "doyle_baskervilles_part2",
+          "label": "Arthur Conan Doyle",
+          "pc1": 0.7995,
+          "pc2": 6.1979,
+          "pc3": -4.6513
+        },
+        {
+          "doc_id": "doyle_baskervilles_part3",
+          "label": "Arthur Conan Doyle",
+          "pc1": 2.0159,
+          "pc2": 5.4671,
+          "pc3": -4.3202
+        },
+        {
+          "doc_id": "doyle_lost_world_part1",
+          "label": "Arthur Conan Doyle",
+          "pc1": 1.9145,
+          "pc2": 6.7341,
+          "pc3": -4.7313
+        },
+        {
+          "doc_id": "doyle_lost_world_part2",
+          "label": "Arthur Conan Doyle",
+          "pc1": -0.2247,
+          "pc2": 4.5478,
+          "pc3": -2.8699
+        },
+        {
+          "doc_id": "doyle_lost_world_part3",
+          "label": "Arthur Conan Doyle",
+          "pc1": -1.8571,
+          "pc2": 3.4378,
+          "pc3": -8.0764
+        },
+        {
+          "doc_id": "wells_time_machine_part1",
+          "label": "H. G. Wells",
+          "pc1": -7.3952,
+          "pc2": -2.2333,
+          "pc3": -3.3809
+        },
+        {
+          "doc_id": "wells_time_machine_part2",
+          "label": "H. G. Wells",
+          "pc1": -7.5748,
+          "pc2": -6.107,
+          "pc3": -4.0926
+        },
+        {
+          "doc_id": "wells_time_machine_part3",
+          "label": "H. G. Wells",
+          "pc1": -8.8547,
+          "pc2": -6.2697,
+          "pc3": -5.608
+        },
+        {
+          "doc_id": "wells_war_of_worlds_part1",
+          "label": "H. G. Wells",
+          "pc1": -9.8596,
+          "pc2": -4.828,
+          "pc3": -2.1837
+        },
+        {
+          "doc_id": "wells_war_of_worlds_part2",
+          "label": "H. G. Wells",
+          "pc1": -11.9179,
+          "pc2": -2.7974,
+          "pc3": -0.3067
+        },
+        {
+          "doc_id": "wells_war_of_worlds_part3",
+          "label": "H. G. Wells",
+          "pc1": -10.1503,
+          "pc2": -3.351,
+          "pc3": 0.9493
+        },
+        {
+          "doc_id": "wells_invisible_man_part1",
+          "label": "H. G. Wells",
+          "pc1": -7.2333,
+          "pc2": 1.704,
+          "pc3": 5.6219
+        },
+        {
+          "doc_id": "wells_invisible_man_part2",
+          "label": "H. G. Wells",
+          "pc1": -6.5932,
+          "pc2": 4.0776,
+          "pc3": 4.9993
+        },
+        {
+          "doc_id": "wells_invisible_man_part3",
+          "label": "H. G. Wells",
+          "pc1": -7.275,
+          "pc2": 2.0804,
+          "pc3": 1.6517
+        }
+      ]
+    }
+  }
+}

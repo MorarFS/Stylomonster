@@ -1,0 +1,16 @@
+# Virtual environments & Python caches
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+src/*.egg-info/
+.pytest_cache/
+build/
+dist/
+
+# Keep pg1404.txt and processed benchmark tables/JSONs, ignore large raw novels cache
+# (01_download_corpora.py automatically downloads novels on demand)
+data/raw/novels/*.txt
+data/processed/federalist_corpus.json
+data/processed/literature_segments_corpus.json

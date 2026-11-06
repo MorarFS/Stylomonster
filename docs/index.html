@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Computational Stylometry &amp; Authorship Attribution — Interactive Compendium &amp; Lab</title>
+  <meta name="description" content="Interactive guide and live laboratory for 17 computational stylometry and authorship attribution methods—including Burrows's Delta, Cosine Delta, Mosteller & Wallace function words, Koppel's General Imposters, Unmasking, and their empirical limits." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400&amp;display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Sticky Top Navigation -->
+  <header class="site-header">
+    <div class="container nav-bar">
+      <div class="brand">
+        <span>Stylometry Toolkit</span>
+        <span class="brand-version">v1.1.0 • 17 Methods</span>
+      </div>
+      <nav aria-label="Primary Navigation">
+        <ul class="nav-links">
+          <li><a id="nav-link-methods" href="#methods-compendium">17 Methods Compendium</a></li>
+          <li><a id="nav-link-sandbox" href="#live-sandbox">Live Text Analyzer</a></li>
+          <li><a id="nav-link-benchmarks" href="#benchmarks">Federalist &amp; Literary Benchmarks</a></li>
+          <li><a id="nav-link-limits" href="#use-and-limits">Use, Limits &amp; Ethics</a></li>
+        </ul>
+      </nav>
+      <div class="nav-actions">
+        <button type="button" id="theme-toggle-btn" class="btn btn-sm">Dark Ink Mode</button>
+        <a id="github-repo-link" class="btn btn-sm btn-primary" href="https://github.com/MorarFS/stylometry-toolkit" target="_blank" rel="noopener noreferrer">GitHub Repo</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Section 1: Editorial Hero -->
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <span class="section-eyebrow">Computational Linguistics &amp; Digital Text Forensics</span>
+          <h1>Quantifying the Unconscious Fingerprint of Authorship</h1>
+          <p class="hero-lead">
+            Every writer leaves behind a measurable statistical signature—not in rare content nouns, which shift with topic, but in the unconscious frequencies of prepositions, conjunctions, clause punctuation, and morphological transitions. Explore all <strong>17 foundational and modern stylometric methods</strong>, test your own texts live in the browser, and understand the mathematical limits of authorship attribution.
+          </p>
+          <div class="hero-actions">
+            <a id="hero-cta-methods" href="#methods-compendium" class="btn btn-primary">Explore the 17 Methods</a>
+            <a id="hero-cta-sandbox" href="#live-sandbox" class="btn">Try Live Text Sandbox</a>
+            <a id="hero-cta-limits" href="#use-and-limits" class="btn">When Stylometry Fails (Limits Guide)</a>
+          </div>
+          <div class="hero-stats">
+            <div class="stat-item">
+              <span class="stat-value">17</span>
+              <span class="stat-label">Implemented Algorithms (1887–2017)</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value">100%</span>
+              <span class="stat-label">Mosteller–Wallace CV on Federalist</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value">12 / 12</span>
+              <span class="stat-label">Disputed Federalist Papers Resolved</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value">1.9M</span>
+              <span class="stat-label">Benchmark Corpus Words Tested</span>
+            </div>
+          </div>
+        </div>
+
+        <aside class="hero-card" aria-label="Historical Evolution of Stylometry">
+          <span class="section-eyebrow">130 Years of Quantitative Stylistics</span>
+          <h3>From Word-Length Histograms to Hypersphere Verification</h3>
+          <ul class="timeline-list">
+            <li class="timeline-item">
+              <span class="timeline-year">1887</span>
+              <span><strong>T. C. Mendenhall</strong> proposes <em>Characteristic Curves of Composition</em> (word-length distributions) to test Shakespeare vs. Bacon.</span>
+            </li>
+            <li class="timeline-item">
+              <span class="timeline-year">1944</span>
+              <span><strong>G. Udny Yule</strong> introduces <em>Yule's K Characteristic</em> to measure vocabulary repetition independent of sample size.</span>
+            </li>
+            <li class="timeline-item">
+              <span class="timeline-year">1964</span>
+              <span><strong>Mosteller &amp; Wallace</strong> resolve the 12 disputed <em>Federalist Papers</em> using Bayesian/discriminant rates of 30 function words (<em>upon</em>, <em>whilst</em>).</span>
+            </li>
+            <li class="timeline-item">
+              <span class="timeline-year">2002</span>
+              <span><strong>John F. Burrows</strong> introduces <em>Delta (Δ_B)</em>—mean absolute distance over corpus-standardized z-scores of the Most Frequent Words.</span>
+            </li>
+            <li class="timeline-item">
+              <span class="timeline-year">2014</span>
+              <span><strong>Koppel &amp; Winter</strong> introduce the <em>General Imposters (GI)</em> Monte Carlo framework for open-set authorship verification.</span>
+            </li>
+            <li class="timeline-item">
+              <span class="timeline-year">2017</span>
+              <span><strong>Evert et al. (Würzburg)</strong> prove that L2-normalized <em>Cosine Delta (Δ_cos)</em> outperforms Manhattan Delta across languages and MFW sizes.</span>
+            </li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Section 2: Interactive 17-Method Compendium -->
+    <section id="methods-compendium" class="section">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <span class="section-eyebrow">Interactive Methodological Compendium</span>
+            <h2>All 17 Stylometric Methods: Theory, Formulas, Use &amp; Limits</h2>
+          </div>
+          <p style="font-size: 0.9rem;">Select any category or algorithm below to inspect its exact mathematical formulation, best-practice parameters, failure modes, and Python code.</p>
+        </div>
+
+        <!-- Category Filter Buttons -->
+        <div id="method-category-bar" class="filter-bar" role="tablist" aria-label="Filter stylometric methods by category"></div>
+
+        <!-- Split Workspace: Method List + Dossier -->
+        <div class="methods-workspace">
+          <div id="methods-list-container" class="methods-list" role="listbox" aria-label="Stylometric methods list"></div>
+          <article id="method-dossier-container" class="method-dossier" aria-live="polite"></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: Live Client-Side Stylometric Laboratory -->
+    <section id="live-sandbox" class="section">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <span class="section-eyebrow">Interactive Browser Laboratory</span>
+            <h2>Live Stylometric Fingerprint &amp; Attribution Sandbox</h2>
+          </div>
+          <p style="font-size: 0.9rem;">Paste any text or load a historical preset to compute lexical richness (MATTR, Yule's K, Honoré's R), punctuation cadence, function-word marker rates, and Mendenhall curves in real time.</p>
+        </div>
+
+        <div class="sandbox-grid">
+          <!-- Left: Input & Presets -->
+          <div class="sandbox-input-panel">
+            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem;">
+              <label for="sandbox-textarea" style="font-weight: 600; font-size: 0.92rem;">Load Benchmark Passage or Paste Custom Text</label>
+              <span id="sandbox-preset-status" style="font-size: 0.78rem; color: var(--accent-secondary); font-family: var(--font-mono);"></span>
+            </div>
+            <div id="sandbox-preset-buttons" class="preset-row"></div>
+            <textarea id="sandbox-textarea" class="text-editor" spellcheck="false" aria-label="Text passage for live stylometric analysis"></textarea>
+            <div id="sandbox-length-banner" class="length-banner ok"></div>
+          </div>
+
+          <!-- Right: Live Computed Metrics & Mendenhall Curve Canvas -->
+          <div class="sandbox-output-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem;">
+              <h3 style="font-size: 1.15rem;">Live Extracted Stylometric Vector</h3>
+              <span class="badge badge-primary">Real-Time Client Engine</span>
+            </div>
+
+            <div class="metrics-mini-grid">
+              <div class="metric-tile">
+                <div class="metric-tile-label">Word Tokens (N)</div>
+                <div id="live-tokens" class="metric-tile-val">—</div>
+              </div>
+              <div class="metric-tile">
+                <div class="metric-tile-label">MATTR (Diversity)</div>
+                <div id="live-mattr" class="metric-tile-val">—</div>
+              </div>
+              <div class="metric-tile">
+                <div class="metric-tile-label">Yule's K (Repetition)</div>
+                <div id="live-yules-k" class="metric-tile-val">—</div>
+              </div>
+              <div class="metric-tile">
+                <div class="metric-tile-label">Honoré's R (Hapax)</div>
+                <div id="live-honores-r" class="metric-tile-val">—</div>
+              </div>
+              <div class="metric-tile">
+                <div class="metric-tile-label">Mean Sentence Len</div>
+                <div id="live-sent-len" class="metric-tile-val">—</div>
+              </div>
+              <div class="metric-tile">
+                <div class="metric-tile-label">Semicolons `;` / 1k</div>
+                <div id="live-semicolons" class="metric-tile-val">—</div>
+              </div>
+              <div class="metric-tile">
+                <div class="metric-tile-label">"upon" vs "on" / 1k</div>
+                <div id="live-upon-on" class="metric-tile-val">—</div>
+              </div>
+              <div class="metric-tile">
+                <div class="metric-tile-label">Kincaid Grade</div>
+                <div id="live-fk-grade" class="metric-tile-val">—</div>
+              </div>
+            </div>
+
+            <div style="padding: 0.75rem 1rem; border-radius: var(--radius-sm); background: var(--bg-subtle); font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-primary);">
+              <span id="live-attribution-summary"></span>
+            </div>
+
+            <div class="canvas-card">
+              <div class="canvas-header">
+                <span>Mendenhall's Characteristic Curve P(|w| = k) for Word Lengths 1..15</span>
+                <select id="reference-curve-select" class="btn btn-sm" aria-label="Select reference author curve to overlay"></select>
+              </div>
+              <canvas id="mendenhall-canvas" height="220"></canvas>
+              <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-top: 0.45rem;">
+                <span>● Solid Vermilion: Live Input Passage</span>
+                <span>--- Dashed Blue: Selected Reference Author Corpus</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: Empirical Benchmarks (Federalist Papers & 19th-C. Novelists) -->
+    <section id="benchmarks" class="section">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <span class="section-eyebrow">Empirical Validation &amp; Forensic Case Studies</span>
+            <h2>Testing Authorship on Classic Benchmark Corpora</h2>
+          </div>
+          <p style="font-size: 0.9rem;">Results generated by our <code>stylometry</code> Python package across all 85 <em>Federalist Papers</em> and 15 classic 19th-century novels (45 × 10,000-word segments).</p>
+        </div>
+
+        <div class="benchmark-grid">
+          <!-- Left: Interactive Disputed Federalist Inspector -->
+          <div class="hero-card">
+            <span class="section-eyebrow">Case Study 1 • Intra-Genre Political Essays</span>
+            <h3>The 12 Disputed Federalist Papers (#49–58, #62–63)</h3>
+            <p style="font-size: 0.88rem; margin-top: 0.35rem;">
+              Both Alexander Hamilton and James Madison claimed authorship of 12 essays written under the shared pseudonym <em>Publius</em>. Click any disputed essay below to inspect its multi-method attribution:
+            </p>
+
+            <div id="disputed-papers-grid" class="paper-selector-grid"></div>
+
+            <div style="padding: 1.15rem; border-radius: var(--radius-sm); background: var(--bg-primary); border: 1px solid var(--border-subtle);">
+              <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem; align-items: center; margin-bottom: 0.75rem;">
+                <h4 id="fed-detail-heading" style="font-size: 1.05rem;">Federalist No. 51</h4>
+                <div style="display: flex; gap: 0.4rem;">
+                  <span id="fed-detail-consensus" class="badge badge-primary"></span>
+                  <span id="fed-detail-bct" class="badge badge-success"></span>
+                </div>
+              </div>
+
+              <div class="metrics-mini-grid" style="margin-bottom: 0.75rem;">
+                <div class="metric-tile">
+                  <div class="metric-tile-label">Burrows's Δ_B</div>
+                  <div id="fed-detail-burrows" class="metric-tile-val" style="font-size: 0.84rem;"></div>
+                </div>
+                <div class="metric-tile">
+                  <div class="metric-tile-label">Cosine Δ_cos</div>
+                  <div id="fed-detail-cosine" class="metric-tile-val" style="font-size: 0.84rem;"></div>
+                </div>
+                <div class="metric-tile">
+                  <div class="metric-tile-label">Mosteller–Wallace</div>
+                  <div id="fed-detail-mw" class="metric-tile-val" style="font-size: 0.84rem;"></div>
+                </div>
+                <div class="metric-tile">
+                  <div class="metric-tile-label">General Imposters</div>
+                  <div id="fed-detail-gi" class="metric-tile-val" style="font-size: 0.84rem;"></div>
+                </div>
+              </div>
+
+              <div id="fed-detail-markers" style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-secondary);"></div>
+            </div>
+
+            <!-- Unmasking Degradation Curve Canvas -->
+            <div class="canvas-card">
+              <div class="canvas-header">
+                <span>Koppel &amp; Schler's (2004) Unmasking Degradation Curves (8 Elimination Rounds)</span>
+              </div>
+              <canvas id="unmasking-canvas" height="225"></canvas>
+              <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem; font-size: 0.75rem; color: var(--text-muted); margin-top: 0.45rem;">
+                <span>● Vermilion: Disputed vs. Hamilton (Stays high → Different authors)</span>
+                <span>● Emerald: Disputed vs. Madison (Collapses to 41.7% → Same author!)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Cross-Validation & Literary Novelists Benchmark Table -->
+          <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <div class="hero-card">
+              <span class="section-eyebrow">12-Method Cross-Validation Benchmark</span>
+              <h3>Accuracy Across Both Corpora</h3>
+              <div class="data-table-wrap" style="margin-top: 0.85rem;">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Stylometric Method</th>
+                      <th>Federalist (2-Class)</th>
+                      <th>Federalist (3-Class)</th>
+                      <th>Literature (45 Segs)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><strong>Mosteller–Wallace (30 Markers)</strong></td><td><strong>100.0% (65/65)</strong></td><td><strong>98.6% (69/70)</strong></td><td>93.3% (42/45)</td></tr>
+                    <tr><td><strong>11-Method Ensemble Consensus</strong></td><td><strong>95.4% (62/65)</strong></td><td><strong>94.3% (66/70)</strong></td><td><strong>100.0% (45/45)</strong></td></tr>
+                    <tr><td><strong>Composite Supervised ML</strong></td><td><strong>95.4% (62/65)</strong></td><td>92.9% (65/70)</td><td><strong>100.0% (45/45)</strong></td></tr>
+                    <tr><td><strong>Argamon's Quadratic Delta (Δ_Q)</strong></td><td>93.9% (61/65)</td><td>92.9% (65/70)</td><td><strong>100.0% (45/45)</strong></td></tr>
+                    <tr><td><strong>Eder's Rank-Weighted Delta (Δ_E)</strong></td><td>93.9% (61/65)</td><td>92.9% (65/70)</td><td><strong>100.0% (45/45)</strong></td></tr>
+                    <tr><td><strong>Burrows's Classic Delta (Δ_B)</strong></td><td>92.3% (60/65)</td><td>88.6% (62/70)</td><td><strong>100.0% (45/45)</strong></td></tr>
+                    <tr><td><strong>Koppel General Imposters (GI)</strong></td><td>92.3% (60/65)</td><td>92.9% (65/70)</td><td><strong>100.0% (45/45)</strong></td></tr>
+                    <tr><td><strong>Kilgarriff's Chi-Squared (χ²)</strong></td><td>87.7% (57/65)</td><td>71.4% (50/70)</td><td>97.8% (44/45)</td></tr>
+                    <tr><td><strong>Cosine / Würzburg Delta (Δ_cos)</strong></td><td>84.6% (55/65)</td><td>75.7% (53/70)</td><td>97.8% (44/45)</td></tr>
+                    <tr><td><strong>Character 3/4-Grams (CNG)</strong></td><td>83.1% (54/65)</td><td>74.3% (52/70)</td><td><strong>100.0% (45/45)</strong></td></tr>
+                    <tr><td><strong>Mendenhall's Curves (1887)</strong></td><td>83.1% (54/65)</td><td>80.0% (56/70)</td><td>73.3% (33/45)</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="hero-card">
+              <span class="section-eyebrow">Case Study 2 • Genre vs. Authorship (19th-C. Novelists)</span>
+              <h3>Held-Out Unseen Novel Attribution (5/5 Correct)</h3>
+              <p style="font-size: 0.86rem; margin: 0.35rem 0 0.85rem;">
+                Trained on 2 novels per author (30 × 10k-word segments) and tested on 5 unseen novels—including Sir Arthur Conan Doyle's science-fiction adventure <em>The Lost World</em> against H. G. Wells's sci-fi romances:
+              </p>
+              <div class="data-table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Unseen Novel</th>
+                      <th>True Author</th>
+                      <th>Predicted</th>
+                      <th>Burrows Δ</th>
+                      <th>Imposters GI</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><em>Sense and Sensibility</em></td><td>Jane Austen</td><td><strong>Jane Austen</strong></td><td>0.591</td><td>1.00</td></tr>
+                    <tr><td><em>Villette</em></td><td>Charlotte Brontë</td><td><strong>Charlotte Brontë</strong></td><td>0.553</td><td>1.00</td></tr>
+                    <tr><td><em>A Tale of Two Cities</em></td><td>Charles Dickens</td><td><strong>Charles Dickens</strong></td><td>0.719</td><td>1.00</td></tr>
+                    <tr><td><em>The Lost World</em> (Sci-Fi)</td><td>A. Conan Doyle</td><td><strong>A. Conan Doyle</strong></td><td>0.608</td><td>1.00</td></tr>
+                    <tr><td><em>The Invisible Man</em></td><td>H. G. Wells</td><td><strong>H. G. Wells</strong></td><td>0.900 (Cos: 0.58)</td><td>0.87</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 5: Educational Guide to Use, Limits & Ethics -->
+    <section id="use-and-limits" class="section">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <span class="section-eyebrow">Critical Methodology &amp; Epistemological Boundaries</span>
+            <h2>Educating on Use &amp; Limits: When Stylometry Works—and When It Fails</h2>
+          </div>
+          <p style="font-size: 0.9rem;">Stylometry is a statistical guide to likely authorship, not magic. Every practitioner must account for sample size floors, the closed-set fallacy, register shifts, and adversarial obfuscation.</p>
+        </div>
+
+        <!-- Interactive Sample-Size Floor Simulator -->
+        <div class="simulator-box">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 1rem;">
+            <div>
+              <span class="section-eyebrow">Interactive Empirical Law (Eder 2015; Evert et al. 2017)</span>
+              <h3>Sample-Size Reliability Simulator: How Short Is Too Short?</h3>
+            </div>
+            <span id="sim-word-count-display" class="badge badge-primary" style="font-size: 0.95rem; padding: 0.3rem 0.75rem;">2,500 words</span>
+          </div>
+
+          <div class="slider-row">
+            <span style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-muted);">100w (Note/Tweet)</span>
+            <input type="range" id="sample-size-slider" min="100" max="10000" step="100" value="2500" aria-label="Simulate document word count from 100 to 10,000 words" />
+            <span style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-muted);">10,000w (Book Chapter)</span>
+          </div>
+
+          <div class="metrics-mini-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 0.85rem;">
+            <div class="metric-tile">
+              <div class="metric-tile-label">Expected Cosine Delta Accuracy</div>
+              <div id="sim-cosine-acc" class="metric-tile-val">—</div>
+            </div>
+            <div class="metric-tile">
+              <div class="metric-tile-label">Expected Burrows's Delta Accuracy</div>
+              <div id="sim-burrows-acc" class="metric-tile-val">—</div>
+            </div>
+            <div class="metric-tile">
+              <div class="metric-tile-label">Mendenhall Word-Length Curve Accuracy</div>
+              <div id="sim-mend-acc" class="metric-tile-val">—</div>
+            </div>
+          </div>
+
+          <div id="sim-verdict-text" style="font-size: 0.88rem; font-weight: 500; color: var(--text-primary);"></div>
+        </div>
+
+        <!-- 6 Fundamental Limits Cards -->
+        <div id="limits-cards-grid" class="limits-grid"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>
+        <strong>Computational Stylometry &amp; Authorship Attribution Toolkit (`stylometry` v1.1.0)</strong>
+        <p style="font-size: 0.82rem; margin-top: 0.25rem;">Open-source Python package, CLI, benchmark datasets, and interactive educational compendium.</p>
+      </div>
+      <div style="display: flex; gap: 1.25rem; font-size: 0.84rem;">
+        <a id="footer-github-link" href="https://github.com/MorarFS/stylometry-toolkit" target="_blank" rel="noopener noreferrer">GitHub Repository</a>
+        <a id="footer-top-link" href="#">Back to Top ↑</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
