@@ -1,11 +1,14 @@
-# `stylometry` — Comprehensive Computational Stylometry & Authorship Attribution Package
+# Stylomonster (`stylometry`) — Computational Stylometry & Authorship Attribution
 
-A complete, modular Python package and script suite that consolidates **17 classical and modern stylometric methods**, feature extractors, statistical distance measures, authorship verification algorithms, sequential/collaborative analysis tools, and benchmark corpus loaders into a single library and CLI.
+- **GitHub Repository**: [https://github.com/MorarFS/Stylomonster](https://github.com/MorarFS/Stylomonster)
+- **Live Interactive Website & Lab (GitHub Pages)**: [https://morarfs.github.io/Stylomonster/](https://morarfs.github.io/Stylomonster/)
+
+A complete, modular Python package, CLI, and interactive educational web application that consolidates **17 classical and modern stylometric methods**, feature extractors, statistical distance measures, authorship verification algorithms, sequential/collaborative analysis tools, and benchmark corpus loaders into a single library.
 
 ## Package & Repository Structure
 
 ```text
-/home/antigravity/stylometry_toolkit/
+Stylomonster/
 ├── pyproject.toml
 ├── README.md
 ├── RESOURCES.md                         # Complete mathematical, algorithmic & bibliographic catalog
@@ -37,7 +40,7 @@ A complete, modular Python package and script suite that consolidates **17 class
 │   ├── 05_attribute_custom_text.py      # Standalone forensic attribution script for any custom text/folder
 │   ├── run_experiments.py               # Core benchmark runner invoked by 03_test_authorship.py
 │   └── run_all.sh                       # Master end-to-end execution script (pytest + scripts 01..05)
-├── docs/                                # Interactive Educational Website & Live Stylometry Lab
+├── docs/                                # Interactive Educational Website & Live Stylometry Lab (GitHub Pages)
 │   ├── index.html                       # Semantic HTML5 single-page application
 │   ├── styles.css                       # Editorial Vanilla CSS design system (Light & Dark modes)
 │   ├── data.js                          # 17-method pedagogical store, presets & benchmark results
@@ -49,9 +52,9 @@ A complete, modular Python package and script suite that consolidates **17 class
     └── test_stylometry.py               # Comprehensive pytest unit & integration test suite
 ```
 
-## Interactive Web Application (`docs/`)
+## Interactive Web Application (`docs/` & GitHub Pages)
 
-The repository includes a zero-dependency interactive web application in [`docs/index.html`](docs/index.html) (ready for GitHub Pages or local preview):
+The repository includes a zero-dependency interactive web application in [`docs/index.html`](docs/index.html) published via GitHub Pages at **[https://morarfs.github.io/Stylomonster/](https://morarfs.github.io/Stylomonster/)**:
 - **17-Method Interactive Compendium**: Filterable dossier for every stylometric method with conceptual intuition, exact mathematical formulas, best-practice parameters, failure modes/limits, and copyable Python snippets.
 - **Live Browser Stylometry Sandbox**: Paste any text or load historical presets to compute real-time MATTR, Yule's $K$, Honoré's $R$, semicolon/colon density, function-word marker rates (`upon` vs. `on`, `while` vs. `whilst`), and an interactive Mendenhall word-length curve `<canvas>`.
 - **Empirical Benchmark & Unmasking Explorer**: Inspect all 12 disputed *Federalist Papers*, Koppel's Unmasking degradation curves, and the 19th-Century Novelists attribution benchmark.
